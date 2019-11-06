@@ -41,6 +41,7 @@ group :development, :test do
   gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
   gem 'factory_bot', '~> 4.8', '>= 4.8.2'
   gem 'rspec-rails', '~> 3.4', '>= 3.4.2'
+  gem 'capybara', '>= 2.15'
 end
 
 group :development do
@@ -54,10 +55,11 @@ end
 
 group :test do
   # Adds support for Capybara system testing and selenium driver
-  gem 'capybara', '>= 2.15'
   gem 'selenium-webdriver'
+  gem 'shoulda-matchers', '~> 3.1', '>= 3.1.1'
   # Easy installation and use of chromedriver to run system tests with Chrome
   gem 'chromedriver-helper'
+  gem 'webdrivers', '~> 4.0'
 end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
