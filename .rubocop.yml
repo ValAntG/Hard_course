@@ -1,0 +1,23 @@
+# Rails:
+#   Enabled: true
+
+AllCops:
+  Exclude:
+    - config/initializers/secret_token.rb
+    - db/schema.rb
+    - db/migrate/**/*
+    - node_modules/**/*
+    - bin/**/*
+    - 'config/environments/**/*'
+
+Style/FrozenStringLiteralComment:
+  Enabled: false
+
+Metrics/LineLength:
+  Max: 120
+
+Style/Documentation:
+  Enabled: false
+
+Metrics/MethodLength:
+  Max: 30
