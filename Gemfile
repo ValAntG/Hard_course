@@ -3,6 +3,7 @@ git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
 ruby '2.6.3'
 
+gem 'jquery-rails', '>= 4.3.5'
 gem 'pry', '~> 0.12.2'
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '~> 5.2.3'
@@ -43,11 +44,15 @@ gem 'devise', '~> 4.2'
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug', platforms: %i[mri mingw x64_mingw]
-  gem 'capybara', '~> 2.7'
+  gem 'capybara', '~> 3.29'
+  gem 'database_cleaner'
   gem 'factory_bot_rails'
   gem 'rails-controller-testing', '~> 0.0.3'
   gem 'rspec-rails', '~> 3.4', '>= 3.4.2'
   gem 'rubocop-rails'
+  # Adds support for Capybara system testing and selenium driver
+  gem 'selenium-webdriver'
+  gem 'shoulda-matchers', '~> 3.1', '>= 3.1.1'
 end
 
 group :development do
@@ -60,11 +65,8 @@ group :development do
 end
 
 group :test do
-  # Adds support for Capybara system testing and selenium driver
-  gem 'selenium-webdriver'
-  gem 'shoulda-matchers', '~> 3.1', '>= 3.1.1'
   # Easy installation and use of chromedriver to run system tests with Chrome
-  gem 'chromedriver-helper'
+  # gem 'chromedriver-helper'
   gem 'webdrivers', '~> 4.0'
   # Use launchy on the commandline, within the Capybara and Rspec-rails testing environment, or via its API
   gem 'launchy', '~> 2.4', '>= 2.4.3'
