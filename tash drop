@@ -1,0 +1,28 @@
+* [33m39e426f[m[33m ([m[1;36mHEAD -> [m[1;32mlesson-7[m[33m)[m Lesson#7 bootstrap and small fix
+[31m|[m *   [33m7b780d5[m[33m ([m[1;35mrefs/stash[m[33m)[m WIP on lesson-7: 19dc262 Merge pull request #3 from ValAntG/lesson-6
+[31m|[m [31m|[m[33m\[m  
+[31m|[m[31m/[m [33m/[m  
+[31m|[m * [33m18c25b8[m index on lesson-7: 19dc262 Merge pull request #3 from ValAntG/lesson-6
+[31m|[m[31m/[m  
+*   [33m19dc262[m[33m ([m[1;31morigin/master[m[33m, [m[1;32mmaster[m[33m)[m Merge pull request #3 from ValAntG/lesson-6
+[34m|[m[35m\[m  
+[34m|[m * [33m6110c62[m[33m ([m[1;31morigin/lesson-6[m[33m, [m[1;32mlesson-6[m[33m)[m User can create answer
+[34m|[m * [33m7a9449c[m Lesson#6 User can create answers
+[34m|[m * [33m59e11ca[m Lesson#6 AnswersController
+[34m|[m * [33m767cc85[m Add association between question and answer
+[34m|[m * [33mb987a92[m Lesson#6 answer model
+[34m|[m[34m/[m  
+*   [33ma9bad9c[m Merge pull request #2 from ValAntG/lesson-5
+[36m|[m[1;31m\[m  
+[36m|[m * [33m5444e13[m[33m ([m[1;31morigin/lesson-5[m[33m, [m[1;32mlesson-5[m[33m)[m Lesson#5 bugfix rubocop
+[36m|[m * [33m9efa18e[m Lesson#5 refactoring test code
+[36m|[m * [33m7935127[m Lesson#5 capybara test for question
+[36m|[m[36m/[m  
+*   [33maf080cd[m Merge pull request #1 from ValAntG/question
+[1;32m|[m[1;33m\[m  
+[1;32m|[m * [33m6cad773[m[33m ([m[1;31morigin/question[m[33m, [m[1;32mquestion[m[33m)[m Lesson#4 fix rubocop
+[1;32m|[m * [33m4a9dc05[m Lesson#4 add rspec
+[1;32m|[m * [33mb3fc27f[m Lesson#4 rspec for controller
+[1;32m|[m * [33me714b6b[m add model questions
+[1;32m|[m[1;32m/[m  
+* [33md4cd338[m Initial commit

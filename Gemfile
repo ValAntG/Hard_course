@@ -3,11 +3,11 @@ git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
 ruby '2.6.3'
 
+gem 'jquery-rails', '>= 4.3.5'
 gem 'less-rails'
+gem 'pry', '~> 0.12.2'
 gem 'therubyracer'
 gem 'twitter-bootstrap-rails'
-gem 'jquery-rails', '>= 4.3.5'
-gem 'pry', '~> 0.12.2'
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '~> 5.2.3'
 # Use postgresql as the database for Active Record
@@ -69,7 +69,6 @@ end
 
 group :test do
   # Easy installation and use of chromedriver to run system tests with Chrome
-  # gem 'chromedriver-helper'
   gem 'webdrivers', '~> 4.0'
   # Use launchy on the commandline, within the Capybara and Rspec-rails testing environment, or via its API
   gem 'launchy', '~> 2.4', '>= 2.4.3'

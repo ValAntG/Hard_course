@@ -10,5 +10,6 @@
 
 = form_for [@question, @answer], remote: true do |f|
   = f.label :body, 'Your answer', class: 'col-xs-3 col-md-2 form-group'
+  .answer-errors
   = f.text_field :body, class: 'col-xs-15 col-sm-6 col-md-10 form-group'
   = f.submit 'Create', class: 'col-md-12 btn btn-primary form-group'
