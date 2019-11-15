@@ -1,9 +1,9 @@
-= form_for @question do |f|
-  p.col-md-2.form-control.label-success= 'Тема вопроса'
-  p.col-md-10.form-control= @question.title
-  p.col-md-2.form-control.label-success= 'Текст вопроса'
-  p.col-md-10.form-control= @question.body
-  p.col-md-12.form-control.label-warning= 'Ответы:'
+= form_for @question
+  p.col-md-2.form-control.label-success = 'Тема вопроса'
+  p.col-md-10.form-control = @question.title
+  p.col-md-2.form-control.label-success = 'Текст вопроса'
+  p.col-md-10.form-control = @question.body
+  p.col-md-12.form-control.label-warning = 'Ответы:'
 
 .answers
   = render 'answers'

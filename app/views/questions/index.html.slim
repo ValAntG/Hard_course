@@ -1,5 +1,5 @@
-p= link_to 'Ask question', new_question_path, class: 'col-md-12 btn btn-primary form-group'
+p = link_to 'Ask question', new_question_path, class: 'col-md-12 btn btn-primary form-group'
 
-p.col-md-12.form-control.label-success= 'Список вопросов'
+p.col-md-12.form-control.label-success = 'Список вопросов'
 - @questions.each do |question|
-  =link_to "#{question.title}", question_path(id: question.id), class: "col-md-6 form-control"
+  = link_to question.title.to_s, question_path(id: question.id), class: 'col-md-6 form-control'

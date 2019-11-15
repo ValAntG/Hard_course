@@ -54,6 +54,7 @@ group :development, :test do
   gem 'rails-controller-testing'
   gem 'rspec-rails'
   gem 'rubocop-rails'
+  gem 'slim_lint'
   # Adds support for Capybara system testing and selenium driver
   gem 'shoulda-matchers'
 end
