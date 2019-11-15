@@ -3,6 +3,9 @@ git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
 ruby '2.6.3'
 
+gem 'less-rails'
+gem 'therubyracer'
+gem 'twitter-bootstrap-rails'
 gem 'jquery-rails', '>= 4.3.5'
 gem 'pry', '~> 0.12.2'
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
@@ -37,22 +40,22 @@ gem 'jbuilder', '~> 2.5'
 
 # Reduces boot times through caching; required in config/boot.rb
 gem 'bootsnap', '>= 1.1.0', require: false
-gem 'slim-rails', '~> 3.1', '>= 3.1.1'
+gem 'slim-rails'
 # Use authentication solution for Rails
-gem 'devise', '~> 4.2'
+gem 'devise'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug', platforms: %i[mri mingw x64_mingw]
   gem 'capybara', '~> 3.29'
+  gem 'capybara-webkit'
   gem 'database_cleaner'
   gem 'factory_bot_rails'
-  gem 'rails-controller-testing', '~> 0.0.3'
-  gem 'rspec-rails', '~> 3.4', '>= 3.4.2'
+  gem 'rails-controller-testing'
+  gem 'rspec-rails'
   gem 'rubocop-rails'
   # Adds support for Capybara system testing and selenium driver
-  gem 'selenium-webdriver'
-  gem 'shoulda-matchers', '~> 3.1', '>= 3.1.1'
+  gem 'shoulda-matchers'
 end
 
 group :development do
