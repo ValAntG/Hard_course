@@ -35,7 +35,8 @@ RSpec.describe QuestionsController, type: :controller do
   end
 
   describe 'GET #new' do
-    sign_in_user
+    let!(:user) { create :user }
+    before { sign_in_user(user) }
     before { get :new }
 
     it 'assings a new Question to @question' do
@@ -48,7 +49,8 @@ RSpec.describe QuestionsController, type: :controller do
   end
 
   describe 'GET #edit' do
-    sign_in_user
+    let!(:user) { create :user }
+    before { sign_in_user(user) }
     let(:question) { create(:question) }
 
     before { get :edit, params: { id: question.id } }
@@ -62,8 +64,11 @@ RSpec.describe QuestionsController, type: :controller do
     end
   end
 
+
   describe 'POST #create' do
-    sign_in_user
+    let!(:user) { create :user }
+    before { sign_in_user(user) }
+
     context 'with valid attributes' do
       it 'saves the new question in the database' do
         expect { post :create, params: { question: attributes_for(:question) } }
@@ -73,6 +78,13 @@ RSpec.describe QuestionsController, type: :controller do
       it 'redirects to show view' do
         post :create, params: { question: attributes_for(:question) }
         expect(response).to redirect_to question_path(assigns(:question))
+      end
+
+      it 'the username of the created question is checked' do
+        post :create, params: { question: attributes_for(:question) }
+        # binding.pry
+        expect(assigns(:question).user).to eq user
+        # expect(question.user).to eq user
       end
     end
 
@@ -90,7 +102,8 @@ RSpec.describe QuestionsController, type: :controller do
   end
 
   describe 'PATCH #update' do
-    sign_in_user
+    let!(:user) { create :user }
+    before { sign_in_user(user) }
     context 'valid attributes' do
       let(:question) { create(:question) }
       it 'assings the requested question to @question' do
@@ -128,7 +141,8 @@ RSpec.describe QuestionsController, type: :controller do
   end
 
   describe 'DELETE #destroy' do
-    sign_in_user
+    let!(:user) { create :user }
+    before { sign_in_user(user) }
     let(:question) { create(:question) }
     it 'deletes question' do
       question

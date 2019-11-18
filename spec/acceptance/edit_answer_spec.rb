@@ -6,12 +6,13 @@ feature 'Answer edition', '
   I did like ot be able to edit my answer
 ' do
   given(:user) { create(:user) }
+  given(:user2) { create(:user) }
   given!(:question) { create(:question) }
   given!(:answer) { create(:answer, question: question) }
 
   scenario 'Unauthenticated user try to edit question' do
     visit question_path(question)
-
+    
     expect(page).to_not have_link 'Edit'
   end
 
@@ -40,6 +41,8 @@ feature 'Answer edition', '
       end
     end
 
-    scenario "try to edit other user's question"
+    scenario "try to edit other user's question" do
+      expect(page).to have_link 'Edit'
+    end
   end
 end
