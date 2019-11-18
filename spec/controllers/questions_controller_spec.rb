@@ -64,7 +64,6 @@ RSpec.describe QuestionsController, type: :controller do
     end
   end
 
-
   describe 'POST #create' do
     let!(:user) { create :user }
     before { sign_in_user(user) }
