@@ -26,8 +26,8 @@ Metrics/MethodLength:
 
 Metrics/BlockLength:
   Exclude:
-    - 'spec/controllers/questions_controller_spec.rb'
-    - 'spec/acceptance/acceptance_helper.rb'
+    - 'spec/controllers/*'
+    - 'spec/acceptance/*'
 
 Style/BlockComments:
   Exclude:

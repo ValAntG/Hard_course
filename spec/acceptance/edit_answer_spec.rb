@@ -5,7 +5,6 @@ feature 'Answer edition', '
   As an author of answer
   I did like ot be able to edit my answer
 ' do
-
   given(:user) { create(:user) }
   given!(:question) { create(:question) }
   given!(:answer) { create(:answer, question: question) }
