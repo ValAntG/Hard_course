@@ -12,7 +12,7 @@ feature 'Answer edition', '
 
   scenario 'Unauthenticated user try to edit question' do
     visit question_path(question)
-    expect(page).to_not have_link 'Edit'
+    expect(page).to_not have_link 'Edit answer'
   end
 
   describe 'Authentificated user' do
@@ -23,12 +23,12 @@ feature 'Answer edition', '
 
     scenario 'sees link to edit' do
       within '.answers' do
-        expect(page).to have_link 'Edit'
+        expect(page).to have_link 'Edit answer'
       end
     end
 
     scenario 'try to edit his answer', js: true do
-      click_on 'Edit'
+      click_on 'Edit answer'
 
       within '.answers' do
         fill_in 'Answer', with: 'edited answer'
@@ -41,7 +41,7 @@ feature 'Answer edition', '
     end
 
     scenario "try to edit other user's question" do
-      expect(page).to have_link 'Edit'
+      expect(page).to have_link 'Edit answer'
     end
   end
 end
