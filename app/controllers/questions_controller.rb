@@ -26,10 +26,12 @@ class QuestionsController < ApplicationController
   end
 
   def update
-    if @question.update(question_params)
-      redirect_to @question
-    else
-      render :edit
+    if @question.user == current_user
+      if @question.update(question_params)
+        redirect_to @question
+      else
+        render :edit
+      end
     end
   end
 

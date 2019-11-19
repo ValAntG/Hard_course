@@ -102,7 +102,7 @@ RSpec.describe QuestionsController, type: :controller do
     let!(:user) { create :user }
     before { sign_in_user(user) }
     context 'valid attributes' do
-      let(:question) { create(:question) }
+      let(:question) { create(:question, user: user) }
       it 'assings the requested question to @question' do
         patch :update, params: { id: question.id, question: attributes_for(:question) }
         expect(assigns(:question)).to eq question
@@ -119,14 +119,10 @@ RSpec.describe QuestionsController, type: :controller do
         patch :update, params: { id: question.id, question: attributes_for(:question) }
         expect(response).to redirect_to question
       end
-
-      it 'author can change his question' do
-        
-      end
     end
 
     context 'invalid attributes' do
-      let(:question) { create(:question) }
+      let(:question) { create(:question, user: user) }
       before { patch :update, params: { id: question.id, question: { title: 'new title', body: nil } } }
 
       it 'does not change question attributes' do
@@ -137,6 +133,27 @@ RSpec.describe QuestionsController, type: :controller do
 
       it 're-renders edit view' do
         expect(response).to render_template :edit
+      end
+    end
+
+    context 'edit questions by users' do
+      let!(:question) { create(:question, user: user) }
+      let!(:user2) { create :user }
+      let!(:question2) { create(:question, user: user2) }
+      before { sign_in_user(user2) }
+
+      it 'author can change his question' do
+        patch :update, params: { id: question2.id, question: { title: 'new title', body: 'new body' } }
+        question2.reload
+        expect(question2.title).to eq 'new title'
+        expect(question2.body).to eq 'new body'
+      end
+
+      it 'author cannot change his own question' do
+        patch :update, params: { id: question.id, question: { title: 'new title', body: 'new body' } }
+        question.reload
+        expect(question.title).to eq 'MyString'
+        expect(question.body).to eq 'MyText'
       end
     end
   end
