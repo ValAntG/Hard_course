@@ -1,7 +1,7 @@
 - @question.answers.each do |answer|
   - if answer.persisted?
     p.col-md-12.form-control = answer.body
-    - if user_signed_in?
+    - if current_user == answer.question.user
       p.col-md-12.form-control = link_to 'Edit answer', '', class: 'edit-answer-link', data: { answer_id: answer.id }
       p
         = form_for [@question, answer], remote: true, html: { id: "edit-answer-#{answer.id}" } do |f|
