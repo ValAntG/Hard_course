@@ -1,3 +1,22 @@
+GIT
+  remote: https://github.com/MustafaZain/less-rails
+  revision: 946213803a5b274260dad17526eb201230e4a761
+  specs:
+    less-rails (2.8.1)
+      actionpack (>= 4.0)
+      less (~> 2.6.0)
+      sprockets (> 2, < 4)
+      tilt
+
+GIT
+  remote: https://github.com/thoughtbot/capybara-webkit.git
+  revision: 77fdac424cd6fdb5aa266b229a888cc58da8e95e
+  branch: master
+  specs:
+    capybara-webkit (1.15.1)
+      capybara (>= 2.3, < 4.0)
+      json
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -60,9 +79,6 @@ GEM
       rack-test (>= 0.6.3)
       regexp_parser (~> 1.5)
       xpath (~> 3.2)
-    capybara-webkit (1.15.1)
-      capybara (>= 2.3, < 4.0)
-      json
     childprocess (3.0.0)
     coderay (1.1.2)
     coffee-rails (4.2.2)
@@ -107,11 +123,6 @@ GEM
       addressable (~> 2.3)
     less (2.6.0)
       commonjs (~> 0.2.7)
-    less-rails (2.8.0)
-      actionpack (>= 4.0)
-      less (~> 2.6.0)
-      sprockets (> 2, < 4)
-      tilt
     libv8 (3.16.14.19)
     listen (3.1.5)
       rb-fsevent (~> 0.9, >= 0.9.4)
@@ -217,7 +228,7 @@ GEM
     sass-listen (4.0.0)
       rb-fsevent (~> 0.9, >= 0.9.4)
       rb-inotify (~> 0.9, >= 0.9.7)
-    sass-rails (5.1.0)
+    sass-rails (5.0.8)
       railties (>= 5.2.0)
       sass (~> 3.1)
       sprockets (>= 2.8, < 4.0)
@@ -295,7 +306,7 @@ DEPENDENCIES
   bootsnap (>= 1.1.0)
   byebug
   capybara (~> 3.29)
-  capybara-webkit
+  capybara-webkit!
   coffee-rails (~> 4.2)
   database_cleaner
   devise
@@ -303,7 +314,7 @@ DEPENDENCIES
   jbuilder (~> 2.5)
   jquery-rails (>= 4.3.5)
   launchy (~> 2.4, >= 2.4.3)
-  less-rails
+  less-rails!
   listen (>= 3.0.5, < 3.2)
   pg (>= 0.18, < 2.0)
   pry (~> 0.12.2)
@@ -312,7 +323,7 @@ DEPENDENCIES
   rails-controller-testing
   rspec-rails
   rubocop-rails
-  sass-rails (~> 5.0)
+  sass-rails (~> 5.0.6)
   shoulda-matchers
   slim-rails
   slim_lint

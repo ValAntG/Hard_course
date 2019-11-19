@@ -81,9 +81,7 @@ RSpec.describe QuestionsController, type: :controller do
 
       it 'the username of the created question is checked' do
         post :create, params: { question: attributes_for(:question) }
-        # binding.pry
         expect(assigns(:question).user).to eq user
-        # expect(question.user).to eq user
       end
     end
 
@@ -120,6 +118,10 @@ RSpec.describe QuestionsController, type: :controller do
       it 'redirects to the update question' do
         patch :update, params: { id: question.id, question: attributes_for(:question) }
         expect(response).to redirect_to question
+      end
+
+      it 'author can change his question' do
+        
       end
     end
 
