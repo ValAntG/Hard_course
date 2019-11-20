@@ -8,7 +8,9 @@ feature 'Answer edition', '
   given!(:user) { create(:user) }
   given!(:user2) { create(:user) }
   given!(:question) { create(:question, user: user) }
-  given!(:answer) { create(:answer, question: question) }
+  given!(:question2) { create(:question, user: user2) }
+  given!(:answer) { create(:answer, question: question, user: user) }
+  given!(:answer2) { create(:answer, question: question2, user: user) }
 
   scenario 'Unauthenticated user try to edit question' do
     visit question_path(question)
@@ -22,6 +24,13 @@ feature 'Answer edition', '
     end
 
     scenario 'sees link to edit' do
+      within '.answers' do
+        expect(page).to have_link 'Edit answer'
+      end
+    end
+
+    scenario 'sees a link to edit the answer, question created by another user' do
+      visit question_path(question2)
       within '.answers' do
         expect(page).to have_link 'Edit answer'
       end
@@ -42,12 +51,10 @@ feature 'Answer edition', '
   end
 
   describe 'Authentificated other user' do
-    before do
+    scenario "try to edit first user's question" do
       sign_in(user2)
       visit question_path(question)
-    end
 
-    scenario "try to edit other user's question" do
       expect(page).to_not have_link 'Edit answer'
     end
   end

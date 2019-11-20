@@ -44,7 +44,7 @@ feature 'Question edition', '
       visit question_path(question)
     end
 
-    scenario "try to edit other user's question" do
+    scenario "try to edit first user's question" do
       expect(page).to_not have_link 'Edit question'
     end
   end

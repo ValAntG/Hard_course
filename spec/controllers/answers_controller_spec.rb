@@ -32,7 +32,7 @@ RSpec.describe AnswersController, type: :controller do
   end
 
   describe 'PATCH #update' do
-    let(:answer) { create(:answer, question: question) }
+    let(:answer) { create(:answer, question: question, user: user) }
     it 'assings the requested answer to @answer' do
       patch :update, params: { id: answer.id, question_id: question.id, answer: attributes_for(:answer), format: :js }
       expect(assigns(:answer)).to eq answer
