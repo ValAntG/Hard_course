@@ -32,6 +32,8 @@ class QuestionsController < ApplicationController
       else
         render :edit
       end
+    else
+      redirect_to @question
     end
   end
 

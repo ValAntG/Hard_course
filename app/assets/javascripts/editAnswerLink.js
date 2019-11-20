@@ -1,8 +1,10 @@
 $(document).on("turbolinks:load", function () {
-  $('.edit-answer-link').on('click ajax:success', function (e) {
-    e.preventDefault();
-    $(this).hide();
-    answer_id = $(this).data('answerId');
-    $('form#edit-answer-' + answer_id).show();
-  });
+  $('a.edit-answer-link').on('click ajax:success', toggleEditAnswerMode);
 });
+
+function toggleEditAnswerMode(e) {
+  e.preventDefault();
+  $('.edit-answer-link').hide();
+  var answerId = $(this).data('answerId');
+  $('form#edit-answer-' + answerId).show();
+};

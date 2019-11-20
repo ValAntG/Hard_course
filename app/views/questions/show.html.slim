@@ -1,15 +1,28 @@
-= form_for @question
-  p.col-md-2.form-control.label-success = 'Тема вопроса'
-  p.col-md-10.form-control = @question.title
-  p.col-md-2.form-control.label-success = 'Текст вопроса'
-  p.col-md-10.form-control = @question.body
+div
+  = form_for @question, html: { class: 'edit-question-link' }
+    p.col-md-2.form-control.label-success = 'Тема вопроса'
+    p.col-md-10 = @question.title
+    p.col-md-2.form-control.label-success = 'Текст вопроса'
+    p.col-md-10 = @question.body
+    - if @question.user == current_user
+      = link_to 'Edit question', '', class: 'col-md-12 btn btn-primary form-group edit-question-link'
+
+div.questions
+  = form_for @question, remote: true do |q|
+    p = q.label :title, 'Тема вопроса', class: 'form-control label-success'
+    p = q.text_field :title, class: 'form-control'
+    p = q.label :body, 'Текст вопроса', class: 'form-control label-success'
+    p = q.text_field :body, class: 'form-control'
+    p = q.submit 'Save', class: 'form-control label-primary edit-question'
+
+div
   p.col-md-12.form-control.label-warning = 'Ответы:'
+  .answers
+    = render 'answers'
 
-.answers
-  = render 'answers'
-
-= form_for [@question, @answer], remote: true do |f|
-  = f.label :body, 'Your answer', class: 'col-xs-3 col-md-2 form-group'
-  .answer-errors
-  = f.text_field :body, class: 'col-xs-15 col-sm-6 col-md-10 form-group'
-  = f.submit 'Create', class: 'col-md-12 btn btn-primary form-group'
+div.form-horizontal
+  = form_for [@question, @answer], remote: true do |f|
+    = f.label :body, 'Your answer', class: 'col-md-2 form-group'
+    .answer-errors
+    = f.text_field :body, class: 'col-md-10 form-group'
+    = f.submit 'Create', class: 'col-md-12 btn btn-primary'

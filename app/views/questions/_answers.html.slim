@@ -1,10 +1,10 @@
 - @question.answers.each do |answer|
   - if answer.persisted?
-    p.col-md-12.form-control = answer.body
-    - if current_user == answer.question.user
-      p.col-md-12.form-control = link_to 'Edit answer', '', class: 'edit-answer-link', data: { answer_id: answer.id }
-      p
+    div.form-horizontal.form-group
+      p.col-md-8.edit-answer-link = answer.body
+      - if current_user == answer.question.user
+        p.col-md-4.edit-answer-link = link_to 'Edit answer', '', class: 'edit-answer-link', data: { answer_id: answer.id }
         = form_for [@question, answer], remote: true, html: { id: "edit-answer-#{answer.id}" } do |f|
-          = f.label :body, 'Answer'
-          = f.text_area :body
-          = f.submit 'Save'
+            = f.label :body, 'Answer'
+            = f.text_area :body
+            = f.submit 'Save'
