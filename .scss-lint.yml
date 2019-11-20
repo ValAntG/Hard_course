@@ -1,0 +1,23 @@
+scss_files: 'app/assets/stylesheets/'
+
+exclude: 'app/assets/stylesheets/plugins/**'
+
+linters:
+  BorderZero:
+    enabled: false
+
+  Indentation:
+    exclude:
+      - 'path/to/file.scss'
+      - 'path/to/directory/**'
+    severity: warning
+    width: 2
+
+  SelectorFormat:
+    exclude:
+      - 'app/assets/stylesheets/answers.scss'
+
+  Comment:
+    exclude:
+      - 'app/assets/stylesheets/application.css'
+      - 'app/assets/stylesheets/bootstrap_and_overrides.css'

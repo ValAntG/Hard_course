@@ -234,6 +234,8 @@ GEM
       sprockets (>= 2.8, < 4.0)
       sprockets-rails (>= 2.0, < 4.0)
       tilt (>= 1.1, < 3)
+    scss_lint (0.59.0)
+      sass (~> 3.5, >= 3.5.5)
     selenium-webdriver (3.142.6)
       childprocess (>= 0.5, < 4.0)
       rubyzip (>= 1.2.2)
@@ -324,6 +326,7 @@ DEPENDENCIES
   rspec-rails
   rubocop-rails
   sass-rails (~> 5.0.6)
+  scss_lint
   shoulda-matchers
   slim-rails
   slim_lint
