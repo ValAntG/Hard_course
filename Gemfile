@@ -4,7 +4,11 @@ git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 ruby '2.6.3'
 
 gem 'jquery-rails', '>= 4.3.5'
+gem 'less-rails', git: 'https://github.com/MustafaZain/less-rails'
 gem 'pry', '~> 0.12.2'
+gem 'pundit'
+gem 'therubyracer'
+gem 'twitter-bootstrap-rails'
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '~> 5.2.3'
 # Use postgresql as the database for Active Record
@@ -12,7 +16,7 @@ gem 'pg', '>= 0.18', '< 2.0'
 # Use Puma as the app server
 gem 'puma', '~> 3.11'
 # Use SCSS for stylesheets
-gem 'sass-rails', '~> 5.0'
+gem 'sass-rails', '~> 5.0.6'
 # Use Uglifier as compressor for JavaScript assets
 gem 'uglifier', '>= 1.3.0'
 # See https://github.com/rails/execjs#readme for more supported runtimes
@@ -37,22 +41,24 @@ gem 'jbuilder', '~> 2.5'
 
 # Reduces boot times through caching; required in config/boot.rb
 gem 'bootsnap', '>= 1.1.0', require: false
-gem 'slim-rails', '~> 3.1', '>= 3.1.1'
+gem 'slim-rails'
 # Use authentication solution for Rails
-gem 'devise', '~> 4.2'
+gem 'devise'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug', platforms: %i[mri mingw x64_mingw]
   gem 'capybara', '~> 3.29'
+  gem 'capybara-webkit', github: 'thoughtbot/capybara-webkit', branch: 'master'
   gem 'database_cleaner'
   gem 'factory_bot_rails'
-  gem 'rails-controller-testing', '~> 0.0.3'
-  gem 'rspec-rails', '~> 3.4', '>= 3.4.2'
+  gem 'rails-controller-testing'
+  gem 'rspec-rails'
   gem 'rubocop-rails'
+  gem 'scss_lint', require: false
+  gem 'slim_lint'
   # Adds support for Capybara system testing and selenium driver
-  gem 'selenium-webdriver'
-  gem 'shoulda-matchers', '~> 3.1', '>= 3.1.1'
+  gem 'shoulda-matchers'
 end
 
 group :development do
@@ -66,7 +72,6 @@ end
 
 group :test do
   # Easy installation and use of chromedriver to run system tests with Chrome
-  # gem 'chromedriver-helper'
   gem 'webdrivers', '~> 4.0'
   # Use launchy on the commandline, within the Capybara and Rspec-rails testing environment, or via its API
   gem 'launchy', '~> 2.4', '>= 2.4.3'

@@ -35,7 +35,8 @@ RSpec.describe QuestionsController, type: :controller do
   end
 
   describe 'GET #new' do
-    sign_in_user
+    let!(:user) { create :user }
+    before { sign_in_user(user) }
     before { get :new }
 
     it 'assings a new Question to @question' do
@@ -48,7 +49,8 @@ RSpec.describe QuestionsController, type: :controller do
   end
 
   describe 'GET #edit' do
-    sign_in_user
+    let!(:user) { create :user }
+    before { sign_in_user(user) }
     let(:question) { create(:question) }
 
     before { get :edit, params: { id: question.id } }
@@ -63,7 +65,9 @@ RSpec.describe QuestionsController, type: :controller do
   end
 
   describe 'POST #create' do
-    sign_in_user
+    let!(:user) { create :user }
+    before { sign_in_user(user) }
+
     context 'with valid attributes' do
       it 'saves the new question in the database' do
         expect { post :create, params: { question: attributes_for(:question) } }
@@ -73,6 +77,11 @@ RSpec.describe QuestionsController, type: :controller do
       it 'redirects to show view' do
         post :create, params: { question: attributes_for(:question) }
         expect(response).to redirect_to question_path(assigns(:question))
+      end
+
+      it 'the username of the created question is checked' do
+        post :create, params: { question: attributes_for(:question) }
+        expect(assigns(:question).user).to eq user
       end
     end
 
@@ -90,9 +99,10 @@ RSpec.describe QuestionsController, type: :controller do
   end
 
   describe 'PATCH #update' do
-    sign_in_user
+    let!(:user) { create :user }
+    before { sign_in_user(user) }
     context 'valid attributes' do
-      let(:question) { create(:question) }
+      let(:question) { create(:question, user: user) }
       it 'assings the requested question to @question' do
         patch :update, params: { id: question.id, question: attributes_for(:question) }
         expect(assigns(:question)).to eq question
@@ -112,7 +122,7 @@ RSpec.describe QuestionsController, type: :controller do
     end
 
     context 'invalid attributes' do
-      let(:question) { create(:question) }
+      let(:question) { create(:question, user: user) }
       before { patch :update, params: { id: question.id, question: { title: 'new title', body: nil } } }
 
       it 'does not change question attributes' do
@@ -125,10 +135,32 @@ RSpec.describe QuestionsController, type: :controller do
         expect(response).to render_template :edit
       end
     end
+
+    context 'edit questions by users' do
+      let!(:question) { create(:question, user: user) }
+      let!(:user2) { create :user }
+      let!(:question2) { create(:question, user: user2) }
+      before { sign_in_user(user2) }
+
+      it 'author can change his question' do
+        patch :update, params: { id: question2.id, question: { title: 'new title', body: 'new body' } }
+        question2.reload
+        expect(question2.title).to eq 'new title'
+        expect(question2.body).to eq 'new body'
+      end
+
+      it 'author cannot change his own question' do
+        patch :update, params: { id: question.id, question: { title: 'new title', body: 'new body' } }
+        question.reload
+        expect(question.title).to eq 'MyString'
+        expect(question.body).to eq 'MyText'
+      end
+    end
   end
 
   describe 'DELETE #destroy' do
-    sign_in_user
+    let!(:user) { create :user }
+    before { sign_in_user(user) }
     let(:question) { create(:question) }
     it 'deletes question' do
       question

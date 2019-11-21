@@ -17,7 +17,9 @@ class QuestionsController < ApplicationController
   def edit; end
 
   def create
-    @question = Question.create(question_params)
+    @question = Question.new(question_params)
+    @question.user = current_user
+    authorize @question
     if @question.save
       redirect_to @question, notice: 'Your question successfully created.'
     else
@@ -26,6 +28,7 @@ class QuestionsController < ApplicationController
   end
 
   def update
+    authorize @question
     if @question.update(question_params)
       redirect_to @question
     else
