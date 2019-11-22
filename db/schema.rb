@@ -33,14 +33,6 @@ ActiveRecord::Schema.define(version: 2019_11_21_135210) do
     t.index ["question_id"], name: "index_attachments_on_question_id"
   end
 
-  create_table "attachments", force: :cascade do |t|
-    t.string "file"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.integer "question_id"
-    t.index ["question_id"], name: "index_attachments_on_question_id"
-  end
-
   create_table "questions", force: :cascade do |t|
     t.string "title"
     t.text "body"
