@@ -4,6 +4,13 @@ div
     p.col-md-10 = @question.title
     p.col-md-2.form-control.label-success = 'Текст вопроса'
     p.col-md-10 = @question.body
+
+    - unless @question.attachments.empty?
+      p.col-md-4.form-control.label-info = 'Attachments:'
+      ul.col-md-8.form-control.label-info
+        - @question.attachments.each do |a|
+          li.attachment = link_to a.file.identifier, a.file.url
+
     - if @question.user == current_user
       = link_to 'Edit question', '', class: 'col-md-12 btn btn-primary form-group edit-question-link'
 
