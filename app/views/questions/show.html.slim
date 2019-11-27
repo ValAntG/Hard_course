@@ -6,13 +6,13 @@ div
     p.col-md-10 = @question.body
 
     - unless @question.attachments.empty?
-      p.col-md-4.form-control.label-info = 'Attachments:'
-      ul.col-md-8.form-control.label-info
+      p.col-md-4 = 'Attachments:'
+      ul.col-md-8
         - @question.attachments.each do |a|
           li.attachment = link_to a.file.identifier, a.file.url
 
     - if @question.user == current_user
-      = link_to 'Edit question', '', class: 'col-md-12 btn btn-primary form-group edit-question-link'
+      = link_to 'Edit question', '', class: 'col-md-12 btn btn-info form-group edit-question-link'
 
 div.questions
   = form_for @question, remote: true do |q|
@@ -20,7 +20,7 @@ div.questions
     p = q.text_field :title, class: 'form-control'
     p = q.label :body, 'Текст вопроса', class: 'form-control label-success'
     p = q.text_field :body, class: 'form-control'
-    p = q.submit 'Save', class: 'form-control label-primary edit-question'
+    p = q.submit 'Save', class: 'form-control label-info edit-question'
 
 div
   p.col-md-12.form-control.label-warning = 'Ответы:'
@@ -29,7 +29,10 @@ div
 
 div.form-horizontal
   = form_for [@question, @answer], remote: true do |f|
-    = f.label :body, 'Your answer', class: 'col-md-2 form-group'
+    = f.label :body, 'Your answer', class: 'col-md-2 '
     .answer-errors
-    = f.text_field :body, class: 'col-md-10 form-group'
-    = f.submit 'Create', class: 'col-md-12 btn btn-primary'
+    = f.text_field :body, class: 'col-md-10 '
+    = f.fields_for :attachments do |a|
+      = a.label :file, class: 'col-md-2 '
+      = a.file_field :file, class: 'col-md-10 '
+    = f.submit 'Create', class: 'col-md-12 btn btn-info'
