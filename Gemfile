@@ -4,10 +4,12 @@ git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 ruby '2.6.3'
 
 gem 'carrierwave'
+gem 'cocoon'
 gem 'jquery-rails', '>= 4.3.5'
 gem 'less-rails', git: 'https://github.com/MustafaZain/less-rails'
 gem 'pry', '~> 0.12.2'
 gem 'pundit'
+gem 'remotipart', github: 'jbox-web/remotipart', tag: '1.5.0'
 gem 'therubyracer'
 gem 'twitter-bootstrap-rails'
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
@@ -15,7 +17,7 @@ gem 'rails', '~> 5.2.3'
 # Use postgresql as the database for Active Record
 gem 'pg', '>= 0.18', '< 2.0'
 # Use Puma as the app server
-gem 'puma', '~> 3.11'
+gem 'puma', '>= 3.12.2'
 # Use SCSS for stylesheets
 gem 'sass-rails', '~> 5.0.6'
 # Use Uglifier as compressor for JavaScript assets

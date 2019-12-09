@@ -12,6 +12,8 @@
 //
 //= require jquery
 //= require rails-ujs
+//= require cocoon
+//= require jquery.remotipart
 //= require activestorage
 //= require turbolinks
 //= require twitter/bootstrap

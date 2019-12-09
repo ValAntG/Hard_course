@@ -26,15 +26,16 @@ feature 'Question edition', '
 
     scenario 'try to edit his question', js: true do
       click_on 'Edit question'
-
-      within '.questions' do
-        fill_in 'question_title', with: 'edited title'
-        fill_in 'question_body', with: 'edited body'
+      within '.edit_question' do
+        fill_in 'question_title', with: 'Edited title'
+        fill_in 'question_body', with: 'Edited body'
         click_on 'Save'
+      end
+      within '.question-show-form' do
         expect(page).to_not have_content question.body
         expect(page).to_not have_selector('textarea', visible: true)
+        expect(page).to have_content 'Edited title'
       end
-      expect(page).to have_content 'edited title'
     end
   end
 

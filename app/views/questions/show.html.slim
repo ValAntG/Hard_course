@@ -1,38 +1,29 @@
-div
-  = form_for @question, html: { class: 'edit-question-link' }
-    p.col-md-2.form-control.label-success = 'Тема вопроса'
-    p.col-md-10 = @question.title
-    p.col-md-2.form-control.label-success = 'Текст вопроса'
-    p.col-md-10 = @question.body
+.question-show-form
+  .form-horizontal
+    = form_for @question, html: { class: 'edit-question-link' }
+      .form-group
+        .col-sm-3 = label '', 'Тема вопроса:', class: 'form-control control-label label-warning'
+        .col-sm-9 = label '', @question.title, class: 'form-control'
+      .form-group
+        .col-sm-3 = label '', 'Текст вопроса', class: 'form-control control-label label-warning'
+        .col-sm-9 = label '', @question.body, class: 'form-control'
 
-    - unless @question.attachments.empty?
-      p.col-md-4 = 'Attachments:'
-      ul.col-md-8
-        - @question.attachments.each do |a|
-          li.attachment = link_to a.file.identifier, a.file.url
+      .form-group
+        = render 'attachments_show', element: @question, attachments_size: @attachments_size_question
 
+  .form-horizontal
     - if @question.user == current_user
-      = link_to 'Edit question', '', class: 'col-md-12 btn btn-info form-group edit-question-link'
+      = link_to 'Edit question', '', class: 'btn btn-info form-control edit-question-link'
 
-div.questions
-  = form_for @question, remote: true do |q|
-    p = q.label :title, 'Тема вопроса', class: 'form-control label-success'
-    p = q.text_field :title, class: 'form-control'
-    p = q.label :body, 'Текст вопроса', class: 'form-control label-success'
-    p = q.text_field :body, class: 'form-control'
-    p = q.submit 'Save', class: 'form-control label-info edit-question'
+  .form-horizontal
+    = render 'form', question: @question
+  br
 
-div
-  p.col-md-12.form-control.label-warning = 'Ответы:'
-  .answers
-    = render 'answers'
-
-div.form-horizontal
-  = form_for [@question, @answer], remote: true do |f|
-    = f.label :body, 'Your answer', class: 'col-md-2 '
-    .answer-errors
-    = f.text_field :body, class: 'col-md-10 '
-    = f.fields_for :attachments do |a|
-      = a.label :file, class: 'col-md-2 '
-      = a.file_field :file, class: 'col-md-10 '
-    = f.submit 'Create', class: 'col-md-12 btn btn-info'
+.answers
+  .form-horizontal
+    .form-group
+      .col-sm-12 = label '', 'Ответы:', class: 'form-control label-warning'
+    .answers-show-form
+      = render 'answers_show'
+    .answers-new-form
+      = render 'answers_new'

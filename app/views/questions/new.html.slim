@@ -1,9 +1,1 @@
-= form_for @question do |f|
-  = f.label :title, class: 'col-xs-3 col-md-2 form-group'
-  = f.text_field :title, class: 'col-xs-15 col-sm-6 col-md-10 form-group'
-  = f.label :body, class: 'col-xs-3 col-md-2 form-group'
-  = f.text_area :body, class: 'col-xs-15 col-sm-6 col-md-10 form-group'
-  = f.fields_for :attachments do |a|
-    = a.label :file, class: 'col-md-2 form-group'
-    = a.file_field :file, class: 'col-md-10 form-group'
-  = f.submit 'Create', url: new_question_path, class: 'col-md-12 btn btn-info form-group'
+= render 'form', question: @question

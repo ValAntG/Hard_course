@@ -1,19 +1,21 @@
 class AnswersController < ApplicationController
   before_action :load_answer, only: :update
 
-  def show
-    @answer.order(created_at: :desc)
-  end
+  def show; end
 
   def create
     @question = Question.find(params[:question_id])
+    @attachments_size_answer = 0
     @answer = @question.answers.create(answer_params.merge(user_id: current_user.id))
+    AttachmentService.attachments_load(@answer, attachments_params) if attachments_params
   end
 
   def update
     authorize @answer
-    @answer.update(answer_params)
     @question = @answer.question
+    @attachments_size_answer = @answer.attachments.size
+    AttachmentService.element_update(@answer, attachments_params, answer_params)
+    redirect_to @question
   end
 
   private
@@ -23,6 +25,10 @@ class AnswersController < ApplicationController
   end
 
   def answer_params
-    params.require(:answer).permit(:body, attachments_attributes: [:file])
+    params.require(:answer).permit(:body) if params[:answer]
+  end
+
+  def attachments_params
+    params.require(:attachments).permit(:_destroy, :id, file: []) if params[:attachments]
   end
 end

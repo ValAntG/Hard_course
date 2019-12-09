@@ -9,6 +9,15 @@ GIT
       tilt
 
 GIT
+  remote: https://github.com/jbox-web/remotipart.git
+  revision: 3517e0c1eef5b96c0a8bc1c3948a9da2a109fe4c
+  tag: 1.5.0
+  specs:
+    remotipart (1.5.0)
+      rails (>= 5.0)
+      zeitwerk
+
+GIT
   remote: https://github.com/thoughtbot/capybara-webkit.git
   revision: 77fdac424cd6fdb5aa266b229a888cc58da8e95e
   branch: master
@@ -87,6 +96,7 @@ GEM
       mimemagic (>= 0.3.0)
       mini_mime (>= 0.1.3)
     childprocess (3.0.0)
+    cocoon (1.2.14)
     coderay (1.1.2)
     coffee-rails (4.2.2)
       coffee-script (>= 2.2.0)
@@ -164,7 +174,7 @@ GEM
       coderay (~> 1.1.0)
       method_source (~> 0.9.0)
     public_suffix (4.0.1)
-    puma (3.12.1)
+    puma (3.12.2)
     pundit (2.1.0)
       activesupport (>= 3.0.0)
     rack (2.0.7)
@@ -315,6 +325,7 @@ GEM
     websocket-extensions (0.1.4)
     xpath (3.2.0)
       nokogiri (~> 1.8)
+    zeitwerk (2.2.1)
 
 PLATFORMS
   ruby
@@ -325,6 +336,7 @@ DEPENDENCIES
   capybara (~> 3.29)
   capybara-webkit!
   carrierwave
+  cocoon
   coffee-rails (~> 4.2)
   database_cleaner
   devise
@@ -336,10 +348,11 @@ DEPENDENCIES
   listen (>= 3.0.5, < 3.2)
   pg (>= 0.18, < 2.0)
   pry (~> 0.12.2)
-  puma (~> 3.11)
+  puma (>= 3.12.2)
   pundit
   rails (~> 5.2.3)
   rails-controller-testing
+  remotipart!
   rspec-rails
   rubocop-rails
   sass-rails (~> 5.0.6)

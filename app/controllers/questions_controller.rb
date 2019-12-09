@@ -9,20 +9,24 @@ class QuestionsController < ApplicationController
   def show
     @answer = @question.answers.build
     @answer.attachments.build
+    @attachments_size_question = @question.attachments.size
   end
 
   def new
     @question = Question.new
     @question.attachments.build
+    @attachments_size_question = 0
   end
 
   def edit; end
 
   def create
+    @attachments_size_question = 0
     @question = Question.new(question_params)
     @question.user = current_user
     authorize @question
     if @question.save
+      AttachmentService.attachments_load(@question, attachments_params) if attachments_params
       redirect_to @question, notice: 'Your question successfully created.'
     else
       render :new
@@ -31,11 +35,9 @@ class QuestionsController < ApplicationController
 
   def update
     authorize @question
-    if @question.update(question_params)
-      redirect_to @question
-    else
-      render :edit
-    end
+    @attachments_size_question = @question.attachments.size
+    AttachmentService.element_update(@question, attachments_params, question_params)
+    redirect_to @question
   end
 
   def destroy
@@ -50,6 +52,10 @@ class QuestionsController < ApplicationController
   end
 
   def question_params
-    params.require(:question).permit(:title, :body, attachments_attributes: [:file])
+    params.require(:question).permit(:title, :body) if params[:question]
+  end
+
+  def attachments_params
+    params.require(:attachments).permit(:_destroy, :id, file: []) if params[:attachments]
   end
 end
