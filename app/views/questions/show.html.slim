@@ -14,6 +14,8 @@
   .form-horizontal
     - if @question.user == current_user
       = link_to 'Edit question', '', class: 'btn btn-info form-control edit-question-link'
+      = link_to 'Delete question', @question, method: :delete, data: { confirm: 'Вы действительно хотите удалить?' },
+        class: 'btn btn-danger form-control edit-question-link'
 
   .form-horizontal
     = render 'form', question: @question

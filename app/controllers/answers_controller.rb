@@ -1,5 +1,5 @@
 class AnswersController < ApplicationController
-  before_action :load_answer, only: :update
+  before_action :load_answer, only: %i[update destroy]
 
   def show; end
 
@@ -24,6 +24,12 @@ class AnswersController < ApplicationController
                                                       question_id: @question.id))
     @answer_form.update
     redirect_to @question
+  end
+
+  def destroy
+    authorize @answer
+    @answer.destroy
+    redirect_to question_path(params[:question_id])
   end
 
   private
