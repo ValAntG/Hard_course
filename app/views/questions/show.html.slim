@@ -26,4 +26,4 @@
     .answers-show-form
       = render 'answers_show'
     .answers-new-form
-      = render 'answers_new'
+      = render 'answers_new' unless current_user.nil?

@@ -9,6 +9,7 @@ AllCops:
     - node_modules/**/*
     - bin/**/*
     - 'config/environments/**/*'
+    - public/uploads/attachment/**/**/*
 
 Style/FrozenStringLiteralComment:
   Enabled: false
