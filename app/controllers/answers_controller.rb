@@ -5,7 +5,6 @@ class AnswersController < ApplicationController
 
   def create
     @question = Question.find(params[:question_id])
-    @attachments_size_answer = 0
     @answer = @question.answers.create(answer_params.merge(user_id: current_user.id))
     AttachmentService.attachments_load(@answer, attachments_params) if attachments_params
   end
@@ -13,7 +12,6 @@ class AnswersController < ApplicationController
   def update
     authorize @answer
     @question = @answer.question
-    @attachments_size_answer = @answer.attachments.size
     AttachmentService.element_update(@answer, attachments_params, answer_params)
     redirect_to @question
   end

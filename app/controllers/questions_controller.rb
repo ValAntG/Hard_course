@@ -22,8 +22,7 @@ class QuestionsController < ApplicationController
 
   def create
     @attachments_size_question = 0
-    @question = Question.new(question_params)
-    @question.user = current_user
+    @question = current_user.questions.new(question_params)
     authorize @question
     if @question.save
       AttachmentService.attachments_load(@question, attachments_params) if attachments_params
