@@ -1,15 +1,13 @@
 module AttachmentService
-  def self.attachments_load(element, attachments_params)
-    attachments_params['file'].each do |attachment|
+  def self.attachments_load(element, params)
+    params[:attachments]['files'].each do |attachment|
       @attachment = element.attachments.create!(file: attachment)
     end
   end
 
-  def self.element_update(element, attachments_params, element_params)
-    if attachments_params && attachments_params[:_destroy]
-      element.attachments.find_by(id: attachments_params[:id]).destroy
-    end
-    attachments_load(element, attachments_params) if attachments_params && attachments_params[:file]
-    element.update(element_params) if element_params
+  def self.element_update(element, params)
+    element.attachments.find_by(id: params[:attachments][:id]).destroy if params.dig(:attachments, :_destroy)
+    attachments_load(element, params) if params.dig(:attachments, :files)
+    element.update(params.permit(:title, :body)) if params.dig(:body)
   end
 end

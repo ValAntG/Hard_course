@@ -12,6 +12,6 @@
 
     .form-group.attachment
       .col-sm-3 = question.label :file, class: 'form-control control-label label-success'
-      .col-sm-9 = question.file_field :file, multiple: true, name: 'attachments[file][]', class: 'form-control'
+      .col-sm-9 = question.file_field :file, multiple: true, name: 'question[attachments][files][]', class: 'form-control'
     .form-group
       .col-sm-12 = question.submit 'Save', class: 'btn btn-info form-control'

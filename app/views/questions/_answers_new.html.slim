@@ -5,6 +5,6 @@
     .col-sm-9 = answer.text_field :body, class: 'form-control'
   .form-group
     .col-sm-3 = answer.label :file, class: 'form-control control-label label-success'
-    .col-sm-9 = answer.file_field :file, multiple: true, name: 'attachments[file][]', class: 'form-control'
+    .col-sm-9 = answer.file_field :file, multiple: true, name: 'answer[attachments][files][]', class: 'form-control'
   .form-group
     .col-sm-12 = answer.submit 'Create', class: 'btn btn-info form-control'

@@ -5,14 +5,16 @@ class AnswersController < ApplicationController
 
   def create
     @question = Question.find(params[:question_id])
-    @answer = @question.answers.create(answer_params.merge(user_id: current_user.id))
-    AttachmentService.attachments_load(@answer, attachments_params) if attachments_params
+    @answer = @question.answers.create(answer_params.permit(:body).merge(user_id: current_user.id))
+    return unless answer_params.dig(:attachments)
+
+    AttachmentService.attachments_load(@answer, answer_params.permit(attachments: { files: [] }))
   end
 
   def update
     authorize @answer
     @question = @answer.question
-    AttachmentService.element_update(@answer, attachments_params, answer_params)
+    AttachmentService.element_update(@answer, answer_params)
     redirect_to @question
   end
 
@@ -23,10 +25,6 @@ class AnswersController < ApplicationController
   end
 
   def answer_params
-    params.require(:answer).permit(:body) if params[:answer]
-  end
-
-  def attachments_params
-    params.require(:attachments).permit(:_destroy, :id, file: []) if params[:attachments]
+    params.require(:answer).permit(:body, attachments: [:_destroy, :id, files: []])
   end
 end
