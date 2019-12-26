@@ -1,19 +1,21 @@
 class AnswersController < ApplicationController
   before_action :load_answer, only: :update
 
-  def show
-    @answer.order(created_at: :desc)
-  end
+  def show; end
 
   def create
     @question = Question.find(params[:question_id])
-    @answer = @question.answers.create(answer_params.merge(user_id: current_user.id))
+    @answer_form = AnswerForm.new(answer_params.merge(user_id: current_user.id, question_id: @question.id))
+    @answer_form.save
   end
 
   def update
     authorize @answer
-    @answer.update(answer_params)
-    @question = @answer.question
+    @question = Question.find(params[:question_id])
+    @answer_form = AnswerForm.new(answer_params.merge(id: @answer.id, user_id: current_user.id,
+                                                      question_id: @question.id))
+    @answer_form.update
+    redirect_to @question
   end
 
   private
@@ -23,6 +25,6 @@ class AnswersController < ApplicationController
   end
 
   def answer_params
-    params.require(:answer).permit(:body)
+    params.require(:answer).permit(:body, attachments: [:_destroy, :id, files: []])
   end
 end

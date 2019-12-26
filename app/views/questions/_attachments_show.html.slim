@@ -1,0 +1,4 @@
+- unless attachments_size.zero?
+  .col-sm-3 = label '', 'Attachments:', class: 'form-control control-label label-warning'
+  - element.attachments.each do |attachment|
+    .col-sm-offset-3.col-sm-9.attachment = link_to attachment.file.identifier, attachment.file.url

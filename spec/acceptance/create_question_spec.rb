@@ -13,9 +13,9 @@ feature 'Create question', '
     visit questions_path
     click_on 'Ask question'
 
-    fill_in 'Title', with: 'Text question'
-    fill_in 'Body', with: 'text text'
-    click_on 'Create'
+    fill_in 'question_title', with: 'Text question'
+    fill_in 'question_body', with: 'text text'
+    click_on 'Save'
 
     expect(page).to have_content 'Your question successfully created.'
   end

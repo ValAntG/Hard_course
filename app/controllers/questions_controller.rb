@@ -8,20 +8,24 @@ class QuestionsController < ApplicationController
 
   def show
     @answer = @question.answers.build
+    @answer.attachments.build
+    @attachments_size_question = @question.attachments.size
   end
 
   def new
     @question = Question.new
+    @question.attachments.build
+    @attachments_size_question = 0
   end
 
   def edit; end
 
   def create
-    @question = Question.new(question_params)
-    @question.user = current_user
-    authorize @question
-    if @question.save
-      redirect_to @question, notice: 'Your question successfully created.'
+    @attachments_size_question = 0
+    @question_form = QuestionForm.new(question_params)
+    @question_form.user_id = current_user.id
+    if @question_form.save
+      redirect_to question_url(@question_form.question), notice: 'Your question successfully created.'
     else
       render :new
     end
@@ -29,11 +33,9 @@ class QuestionsController < ApplicationController
 
   def update
     authorize @question
-    if @question.update(question_params)
-      redirect_to @question
-    else
-      render :edit
-    end
+    @question_form = QuestionForm.new(question_params.merge(id: @question.id, user_id: current_user.id))
+    @question_form.update
+    redirect_to @question
   end
 
   def destroy
@@ -48,6 +50,6 @@ class QuestionsController < ApplicationController
   end
 
   def question_params
-    params.require(:question).permit(:title, :body)
+    params.require(:question).permit(:title, :body, attachments: [:_destroy, :id, files: []])
   end
 end

@@ -3,6 +3,6 @@
     $('.answer-errors').html('<%= j message %>');
   <% end %>
 <% else %>
-  $('.answers').html('<%= j render 'questions/answers' %>');
+  $('.answers').html('<%= j render 'questions/answers_show' %>');
   $('a.edit-answer-link').on('click', toggleEditAnswerMode );
 <% end %>
