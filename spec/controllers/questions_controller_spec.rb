@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require 'rails_helper'
 
 RSpec.describe QuestionsController, type: :controller do
@@ -84,12 +82,12 @@ RSpec.describe QuestionsController, type: :controller do
 
       it 'redirects to show view' do
         post :create, params: { question: attributes_for(:question) }
-        expect(response).to redirect_to question_path(assigns(:question))
+        expect(response).to redirect_to question_path(assigns(:question_form).question)
       end
 
       it 'the username of the created question is checked' do
         post :create, params: { question: attributes_for(:question) }
-        expect(assigns(:question).user).to eq user
+        expect(assigns(:question_form).user_id).to eq user.id
       end
     end
 

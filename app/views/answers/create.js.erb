@@ -1,5 +1,5 @@
-<% if @answer.errors.present? %>
-  <% @answer.errors.full_messages.each do |message| %>
+<% if @answer_form.errors.present? %>
+  <% @answer_form.errors.full_messages.each do |message| %>
     $('.answer-errors').html('<%= j message %>');
   <% end %>
 <% else %>

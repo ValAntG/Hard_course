@@ -5,16 +5,16 @@ class AnswersController < ApplicationController
 
   def create
     @question = Question.find(params[:question_id])
-    @answer = @question.answers.create(answer_params.permit(:body).merge(user_id: current_user.id))
-    return unless answer_params.dig(:attachments)
-
-    AttachmentService.attachments_load(@answer, answer_params.permit(attachments: { files: [] }))
+    @answer_form = AnswerForm.new(answer_params.merge(user_id: current_user.id, question_id: @question.id))
+    @answer_form.save
   end
 
   def update
     authorize @answer
-    @question = @answer.question
-    AttachmentService.element_update(@answer, answer_params)
+    @question = Question.find(params[:question_id])
+    @answer_form = AnswerForm.new(answer_params.merge(id: @answer.id, user_id: current_user.id,
+                                                      question_id: @question.id))
+    @answer_form.update
     redirect_to @question
   end
 

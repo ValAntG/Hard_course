@@ -1,5 +1,5 @@
 .form-horizontal.edit-question-form
-  = form_for(@question, html: { multipart: true }) do |question|
+  = form_for(question, html: { multipart: true }) do |question|
     .form-group.title
       .col-sm-3 = question.label :title, 'Тема вопроса', class: 'form-control control-label label-success'
       .col-sm-9 = question.text_field :title, class: 'form-control'

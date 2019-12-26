@@ -22,13 +22,10 @@ class QuestionsController < ApplicationController
 
   def create
     @attachments_size_question = 0
-    @question = current_user.questions.new(question_params.permit(:title, :body))
-    authorize @question
-    if @question.save
-      if question_params.dig(:attachments)
-        AttachmentService.attachments_load(@question, question_params.permit(attachments: { files: [] }))
-      end
-      redirect_to @question, notice: 'Your question successfully created.'
+    @question_form = QuestionForm.new(question_params)
+    @question_form.user_id = current_user.id
+    if @question_form.save
+      redirect_to question_url(@question_form.question), notice: 'Your question successfully created.'
     else
       render :new
     end
@@ -36,8 +33,8 @@ class QuestionsController < ApplicationController
 
   def update
     authorize @question
-    @attachments_size_question = @question.attachments.size
-    AttachmentService.element_update(@question, question_params)
+    @question_form = QuestionForm.new(question_params.merge(id: @question.id, user_id: current_user.id))
+    @question_form.update
     redirect_to @question
   end
 
