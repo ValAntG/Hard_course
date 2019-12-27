@@ -79,9 +79,26 @@ RSpec.describe AnswersController, type: :controller do
       expect(answer.body).to eq 'new body'
     end
 
-    # it 'render update template' do
-    #   patch :update, params: { id: answer.id, question_id: question.id, answer: attributes_for(:answer), format: :js }
-    #   expect(response).to render_template :update
-    # end
+    it 'render update template' do
+      patch :update, params: { id: answer.id, question_id: question.id, answer: attributes_for(:answer), format: :js }
+      expect(response).to redirect_to question_path(question.id)
+    end
+  end
+
+  describe 'DELETE #destroy' do
+    let!(:user) { create :user }
+    before { sign_in_user(user) }
+    let(:question) { create(:question) }
+    let(:answer) { create(:answer, question: question, user: user) }
+    it 'deletes answer' do
+      answer
+      expect { delete :destroy, params: { id: answer.id, question_id: question.id } }
+        .to change(Answer, :count).by(-1)
+    end
+
+    it 'redirect to index view' do
+      delete :destroy, params: { id: answer, question_id: question.id }
+      expect(response).to redirect_to question_path(question.id)
+    end
   end
 end

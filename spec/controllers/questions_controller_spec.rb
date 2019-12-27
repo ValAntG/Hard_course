@@ -137,9 +137,9 @@ RSpec.describe QuestionsController, type: :controller do
         expect(question.body).to eq 'MyText'
       end
 
-      # it 're-renders edit view' do
-      #   expect(response).to render_template :edit
-      # end
+      it 're-renders edit view' do
+        expect(response).to redirect_to question_path
+      end
     end
 
     context 'edit questions by users' do
@@ -176,7 +176,7 @@ RSpec.describe QuestionsController, type: :controller do
 
     it 'redirect to index view' do
       delete :destroy, params: { id: question }
-      expect(response).to redirect_to question_path
+      expect(response).to redirect_to questions_path
     end
   end
 end
