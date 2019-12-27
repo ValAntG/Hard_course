@@ -1,4 +1,8 @@
-= form_for [@question, answer], remote: true, html: { id: "edit-answer-#{answer.id}" } do |answer|
+= form_for [@question, answer], remote: true, html: { id: "edit-answer-#{answer.id}" }, data: { type: :json } do |answer|
+  .form-group
+    .col-sm-3
+    .col-sm-9.answer-errors
+
   .form-group
     .col-sm-3 = answer.label :body, 'My answer', class: 'form-control control-label label-success'
     .col-sm-9 = answer.text_area :body, class: 'form-control'
