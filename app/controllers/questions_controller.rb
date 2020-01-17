@@ -8,6 +8,7 @@ class QuestionsController < ApplicationController
 
   def show
     @answer = @question.answers.build
+    @comment = @question.comments.build
     @answer.attachments.build
     @attachments_size_question = @question.attachments.size
   end
@@ -27,6 +28,7 @@ class QuestionsController < ApplicationController
     if @question_form.save
       redirect_to question_url(@question_form.question), notice: 'Your question successfully created.'
     else
+      @question = Question.new(title: @question_form[:title], body: @question_form[:body])
       render :new
     end
   end

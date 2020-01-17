@@ -1,0 +1,10 @@
+= form_for comment, remote: true, html: { id: "edit-comment-#{comment.id}" }, data: { type: :json } do |comment|
+  .form-group
+    .col-sm-3
+    .col-sm-9.comment-errors
+
+  .form-group
+    .col-sm-3 = comment.label :body, 'My comment', class: 'form-control control-label label-success'
+    .col-sm-9 = comment.text_area :body, class: 'form-control', id: "comment_body_#{comment.object.id}"
+
+  = comment.submit 'Save', class: 'form-control label-info edit-comment'

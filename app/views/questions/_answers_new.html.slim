@@ -1,4 +1,4 @@
-= form_for [@question, @answer], remote: true, data: { type: :html } do |answer|
+= form_for [@question, @answer], remote: true, data: { type: :js } do |answer|
   .form-group
     .col-sm-3
     .col-sm-9.answer-errors
@@ -9,4 +9,4 @@
     .col-sm-3 = answer.label :file, class: 'form-control control-label label-success'
     .col-sm-9 = answer.file_field :file, multiple: true, name: 'answer[attachments][files][]', class: 'form-control'
   .form-group
-    .col-sm-12 = answer.submit 'Create', class: 'btn btn-info form-control'
+    .col-sm-12 = answer.submit 'Create answer', class: 'btn btn-info form-control'

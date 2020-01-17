@@ -8,7 +8,9 @@ class AnswersController < ApplicationController
     @answer_form = AnswerForm.new(answer_params.merge(user_id: current_user.id, question_id: @question.id))
     respond_to do |format|
       if @answer_form.save
+        @comment = @answer_form[:answer].comments.build(user_id: current_user.id)
         format.html { render partial: 'questions/answers_show', layout: false }
+        format.js
         format.json { render json: { answer: @answer_form, attachments: @answer_form.attachments } }
       else
         format.html { render plain: @answer_form.errors.full_messages.join("\n"), status: :unprocessable_entity }

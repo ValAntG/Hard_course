@@ -1,0 +1,9 @@
+= form_for [commentable, @comment], remote: true, data: { type: :js } do |comment|
+  .form-group
+    .col-sm-3
+    .col-sm-9.comment-errors
+  .form-group
+    .col-sm-3 = comment.label :body, 'Your comment', class: 'form-control control-label label-success'
+    .col-sm-9 = comment.text_field :body, class: 'form-control'
+  .form-group
+    .col-sm-12 = comment.submit 'Create comment', class: 'btn btn-info form-control'

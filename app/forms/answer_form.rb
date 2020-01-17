@@ -26,7 +26,6 @@ class AnswerForm
 
   def update
     if valid?
-
       update_answer
       save_attachment unless attachments.empty?
       true

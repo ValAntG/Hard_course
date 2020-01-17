@@ -1,17 +1,17 @@
-= form_for [@question, answer], remote: true, html: { id: "edit-answer-#{answer.id}" }, data: { type: :json } do |answer|
+= form_for answer, remote: true, html: { id: "edit-answer-#{answer.id}" }, data: { type: :json } do |answer|
   .form-group
     .col-sm-3
     .col-sm-9.answer-errors
 
   .form-group
     .col-sm-3 = answer.label :body, 'My answer', class: 'form-control control-label label-success'
-    .col-sm-9 = answer.text_area :body, class: 'form-control'
+    .col-sm-9 = answer.text_area :body, class: 'form-control', id: "answer_body_#{answer.object.id}"
 
   .form-group
     = render 'questions/attachments_edit', element: answer.object, attachments_size: answer.object.attachments.size
 
   .form-group
     .col-sm-3 = answer.label :file, class: 'form-control control-label label-success'
-    .col-sm-9 = answer.file_field :file, multiple: true, name: 'answer[attachments][files][]', class: 'form-control'
+    .col-sm-9 = answer.file_field :file, multiple: true, name: 'answer[attachments][files][]', class: 'form-control', id: "answer_file_#{answer.object.id}"
 
   = answer.submit 'Save', class: 'form-control label-info edit-answer'

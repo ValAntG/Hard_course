@@ -3,4 +3,4 @@
   - element.attachments.each do |attachment|
     .col-sm-offset-3.col-sm-7.attachment = link_to attachment.file.identifier, attachment.file.url
     .col-sm-2 = link_to 'Delete', attachments_path_build(element, attachment), method: :patch,
-                                                                               data: { confirm: 'Are you sure?' }
+             data: { confirm: 'Are you sure?' }

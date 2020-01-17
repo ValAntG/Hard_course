@@ -21,6 +21,15 @@
     = render 'form', question: @question
   br
 
+.comments
+  .form-horizontal
+    .form-group
+      .col-sm-12 = label '', 'Комментировать:', class: 'form-control label-warning'
+    .comments-show-form
+      = render 'comments_show', commentable: @question
+    .comments-new-form
+      = render 'comments_new', commentable: @question unless current_user.nil?
+
 .answers
   .form-horizontal
     .form-group
