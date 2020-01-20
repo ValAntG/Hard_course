@@ -167,16 +167,30 @@ RSpec.describe QuestionsController, type: :controller do
   describe 'DELETE #destroy' do
     let!(:user) { create :user }
     before { sign_in_user(user) }
-    let(:question) { create(:question) }
+    let!(:question) { create(:question) }
+    let!(:answer) { create(:answer, question_id: question.id, user_id: user.id) }
+    let!(:answer2) { create(:answer, question_id: question.id, user_id: user.id) }
+    let!(:comment) { create(:comment, commentable: question, user: user) }
+    let!(:comment2) { create(:comment, commentable: question, user: user) }
+    let!(:comment3) { create(:comment, commentable: answer, user: user) }
+    let!(:comment4) { create(:comment, commentable: answer, user: user) }
+
     it 'deletes question' do
       question
-      expect { delete :destroy, params: { id: question } }
-        .to change(Question, :count).by(-1)
+      expect { delete :destroy, params: { id: question } }.to change(Question, :count).by(-1)
     end
 
     it 'redirect to index view' do
       delete :destroy, params: { id: question }
       expect(response).to redirect_to questions_path
+    end
+
+    it 'when you delete a question, all answers to the question are deleted' do
+      expect { delete :destroy, params: { id: question } }.to change(Answer, :count).by(-2)
+    end
+
+    it 'when you delete a question, all comments to the question and answers are deleted' do
+      expect { delete :destroy, params: { id: question } }.to change(Comment, :count).by(-4)
     end
   end
 end

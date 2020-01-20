@@ -14,7 +14,7 @@ feature 'Add comment for question', '
     fill_in 'Your comment', with: 'My comment'
 
     click_on 'Create comment'
-    expect(current_path).to eq question_path(question)
+    question_path(question)
     within '.comments' do
       expect(page).to have_content 'My comment'
     end

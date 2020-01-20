@@ -1,5 +1,5 @@
 class CommentsController < ApplicationController
-  before_action :load_comment, only: %i[update destroy]
+  before_action :load_elements, only: %i[update destroy]
 
   def show; end
 
@@ -22,12 +22,6 @@ class CommentsController < ApplicationController
 
   def update
     authorize @comment
-    #while @question.class != Question
-    #  @question = @comment.commentable
-    #  @question = @comment.commentable.question
-    #end
-    @question = @comment.commentable
-    @question = @comment.commentable.question unless @comment.commentable.class == Question
     @comment.update(comment_params)
     redirect_to @question
   end
@@ -35,13 +29,19 @@ class CommentsController < ApplicationController
   def destroy
     authorize @comment
     @comment.destroy
-    redirect_to question_path(params[:question_id])
+    redirect_to question_path(@question.id)
   end
 
   private
 
-  def load_comment
+  def load_elements
     @comment = Comment.find(params[:id])
+    #while @question.class != Question
+    #  @question = @comment.commentable
+    #  @question = @comment.commentable.question
+    #end
+    @question = @comment.commentable
+    @question = @comment.commentable.question unless @comment.commentable.class == Question
   end
 
   def comment_params

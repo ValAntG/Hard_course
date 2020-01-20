@@ -5,16 +5,14 @@ feature 'Add comment for answer', '
   As an authenticated user
   I want to be able to create comment
 ' do
-  given(:user) { create(:user) }
-  given(:question) { create(:question) }
-  given(:answer) { create(:answer) }
+  let!(:user) { create(:user) }
+  let!(:question) { create(:question, user_id: user.id) }
+  let!(:answer) { create(:answer, question_id: question.id, user_id: user.id) }
+
   scenario 'Authenticated user create comment', js: true do
     sign_in(user)
     visit question_path(question)
-    fill_in 'Your answer', with: 'My answer'
-    click_on 'Create answer'
 
-    expect(current_path).to eq question_path(question)
     within '.answers' do
       fill_in 'Your comment', with: 'My comment'
       click_on 'Create comment'
@@ -29,8 +27,11 @@ feature 'Add comment for answer', '
   scenario 'User try to create invalid answer', js: true do
     sign_in(user)
     visit question_path(question)
-    click_on 'Create comment'
 
-    expect(page).to have_content "Body can't be blank"
+    within '.answers' do
+      click_on 'Create comment'
+
+      expect(page).to have_content "Body can't be blank"
+    end
   end
 end

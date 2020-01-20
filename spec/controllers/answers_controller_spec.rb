@@ -62,7 +62,7 @@ RSpec.describe AnswersController, type: :controller do
   end
 
   describe 'PATCH #update' do
-    let(:answer) { create(:answer, question: question, user: user) }
+    let!(:answer) { create(:answer, question: question, user: user) }
     it 'assings the requested answer to @answer' do
       patch :update, params: { id: answer.id, question_id: question.id, answer: attributes_for(:answer), format: :js }
       expect(assigns(:answer)).to eq answer
@@ -88,8 +88,8 @@ RSpec.describe AnswersController, type: :controller do
   describe 'DELETE #destroy' do
     let!(:user) { create :user }
     before { sign_in_user(user) }
-    let(:question) { create(:question) }
-    let(:answer) { create(:answer, question: question, user: user) }
+    let!(:question) { create(:question) }
+    let!(:answer) { create(:answer, question_id: question.id, user_id: user.id) }
     it 'deletes answer' do
       answer
       expect { delete :destroy, params: { id: answer.id, question_id: question.id } }

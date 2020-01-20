@@ -41,7 +41,12 @@ class QuestionsController < ApplicationController
   end
 
   def destroy
-    @question.answers.delete_all
+    @question.comments.destroy_all
+    @question.answers.each do |answer|
+      answer.comments.destroy_all
+      answer.attachments.destroy_all
+    end
+    @question.answers.destroy_all
     @question.destroy
     redirect_to questions_path
   end

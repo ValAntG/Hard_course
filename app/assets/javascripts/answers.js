@@ -8,27 +8,34 @@ $(document).on("turbolinks:load", function () {
         $('.answers-show-form').append('<div class="form-horizontal edit-answer-link"></div>');
 
         $('.form-horizontal').last().append('<div class="form-group"></div>');
-        $('.answers-show-form').find('.form-horizontal').find('.form-group').last().append('<div class="col-sm-3"></div>');
+        $('.answers-show-form').find('.form-horizontal').find('.form-group').last()
+          .append('<div class="col-sm-3"></div>');
         $('.answers-show-form').find('.form-horizontal').find('.form-group').find('.col-sm-3').last()
           .append('<label class="form-control control-label label-warning">Ответ:</label>');
-        $('.answers-show-form').find('.form-horizontal').find('.form-group').last().append('<div class="col-sm-9"></div>');
+        $('.answers-show-form').find('.form-horizontal').find('.form-group').last()
+          .append('<div class="col-sm-9"></div>');
         $('.answers-show-form').find('.form-horizontal').find('.form-group').find('.col-sm-9').last()
           .append('<div class="form-control">' + answer.answer.body + '</div>');
 
-        if (answer.attachments.files) {
+        if (answer.answer.attachments.files) {
           $('.form-horizontal').last().append('<div class="form-group"></div>');
-          $('.answers-show-form').find('.form-horizontal').find('.form-group').last().append('<div class="col-sm-3"></div>');
+          $('.answers-show-form').find('.form-horizontal').find('.form-group').last()
+            .append('<div class="col-sm-3"></div>');
           $('.answers-show-form').find('.form-horizontal').find('.form-group').find('.col-sm-3').last()
             .append('<label class="form-control control-label label-warning">Attachments:</label>');
           $('.answers-show-form').find('.form-horizontal').find('.form-group').last()
             .append('<div class="col-sm-offset-3 col-sm-9 attachment"></div>');
           $('.answers-show-form').find('.form-horizontal').find('.form-group').find('.col-sm-9').last()
-            .append("<a href='" + answer.attachments.files[0] + "'>" + answer.attachments.files[0]['original_filename'] + '</a>');
+            .append("<a href='" + answer.attachments[0].file["url"] + "'>" + answer.answer.attachments.files[0].
+              original_filename + "</a>");
         };
 
         $('.form-horizontal').last().append('<div class="form-group"></div>');
-        $('.answers-show-form').find('.form-horizontal').find('.form-group').last()
+        $('.answers-show-form').find('.form-horizontal').last()
           .append('<a class="btn btn-info form-control edit-answer-link">Edit answer</a>');
+        $('.answers-show-form').find('.form-horizontal').last()
+          .append('<a data-confirm="Вы действительно хотите удалить?" class="btn btn-danger form-control ' +
+            'edit-answer-link" rel="nofollow" data-method="delete" href="/answers/' + answer.answer.id + '">Delete answer</a>');
       };
     })
     .bind('ajax:error', function (evt) {
@@ -39,7 +46,6 @@ $(document).on("turbolinks:load", function () {
         $.each(errors, function (index, value) {
           $('.answer-errors').append('<p>' + value + '</p>');
         });
-      }
-      ;
+      };
     });
-})
+});

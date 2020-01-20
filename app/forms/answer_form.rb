@@ -18,6 +18,7 @@ class AnswerForm
     if valid?
       save_answer
       save_attachment unless attachments.empty?
+      @id = answer.id
       true
     else
       false

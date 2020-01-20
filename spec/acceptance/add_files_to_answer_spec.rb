@@ -6,7 +6,7 @@ feature 'Add files to answers', "
   I'd like to be able to attach files
 " do
   given(:user) { create(:user) }
-  given(:question) { create(:question) }
+  given(:question) { create(:question, user_id: user.id) }
 
   background do
     sign_in(user)

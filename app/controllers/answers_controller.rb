@@ -1,5 +1,5 @@
 class AnswersController < ApplicationController
-  before_action :load_answer, only: %i[update destroy]
+  before_action :load_elements, only: %i[update destroy]
 
   def show; end
 
@@ -11,7 +11,7 @@ class AnswersController < ApplicationController
         @comment = @answer_form[:answer].comments.build(user_id: current_user.id)
         format.html { render partial: 'questions/answers_show', layout: false }
         format.js
-        format.json { render json: { answer: @answer_form, attachments: @answer_form.attachments } }
+        format.json { render json: { answer: @answer_form, attachments: @answer_form.answer.attachments } }
       else
         format.html { render plain: @answer_form.errors.full_messages.join("\n"), status: :unprocessable_entity }
         format.json { render json: @answer_form.errors.full_messages, status: :unprocessable_entity }
@@ -21,7 +21,6 @@ class AnswersController < ApplicationController
 
   def update
     authorize @answer
-    @question = @answer.question
     @answer_form = AnswerForm.new(answer_params.merge(id: @answer.id, user_id: current_user.id,
                                                       question_id: @question.id))
     @answer_form.update
@@ -30,14 +29,17 @@ class AnswersController < ApplicationController
 
   def destroy
     authorize @answer
+    @answer.comments.destroy_all
+    @answer.attachments.destroy_all
     @answer.destroy
-    redirect_to question_path(params[:question_id])
+    redirect_to question_path(@question.id)
   end
 
   private
 
-  def load_answer
+  def load_elements
     @answer = Answer.find(params[:id])
+    @question = @answer.question
   end
 
   def answer_params
