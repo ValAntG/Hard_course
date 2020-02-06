@@ -1,6 +1,6 @@
 class AnswerForm
   include ActiveModel::Model
-  include Virtus
+  include Virtus.model
 
   attribute :body, String
   attribute :attachments, Hash[Symbol => Integer]

@@ -21,7 +21,7 @@ RSpec.describe CommentsController, type: :controller do
 
       it 'render create template, send format: html' do
         post :create, params: { comment: attributes_for(:comment), question_id: question, format: :html }
-        expect(response).to render_template(partial: 'questions/_comments_show')
+        expect(response).to render_template(partial: 'comments/_comments_show')
       end
 
       it 'render create template, send format: json' do
@@ -55,7 +55,7 @@ RSpec.describe CommentsController, type: :controller do
       it 'render create template comment for answer, send format: html' do
         post :create, params: { comment: attributes_for(:comment), question_id: question, answer_id: answer,
                                 format: :html }
-        expect(response).to render_template(partial: 'questions/_comments_show')
+        expect(response).to render_template(partial: 'comments/_comments_show')
       end
 
       it 'render create template, send format: json' do
@@ -84,7 +84,7 @@ RSpec.describe CommentsController, type: :controller do
 
       it 'redirects to question show view, send format: html' do
         post :create, params: { comment: attributes_for(:invalid_comment), question_id: question, format: :html }
-        expect(response).to_not render_template(partial: 'questions/_comment_show')
+        expect(response).to_not render_template(partial: 'comments/_comment_show')
       end
 
       it 'redirects to question show view, send format: json' do
@@ -116,7 +116,7 @@ RSpec.describe CommentsController, type: :controller do
       it 'redirects to question show view, send format: html' do
         post :create, params: { comment: attributes_for(:invalid_comment), question_id: question, answer_id: answer,
                                 format: :html }
-        expect(response).to_not render_template(partial: 'questions/_comment_show')
+        expect(response).to_not render_template(partial: 'comments/_comment_show')
       end
 
       it 'redirects to question show view, send format: json' do

@@ -38,7 +38,7 @@ feature 'Answer edition', '
 
     scenario 'try to edit his answer', js: true do
       click_on 'Edit answer'
-      within '.answers-show-form' do
+      within '.answers-index-form' do
         fill_in 'answer[body]', with: 'edited answer'
         click_on 'Save'
 

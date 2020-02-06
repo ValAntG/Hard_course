@@ -1,6 +1,7 @@
 class QuestionsController < ApplicationController
   before_action :load_question, only: %i[show edit update destroy]
   before_action :authenticate_user!, except: %i[index show]
+  after_action :publish_question, only: [:create]
 
   def index
     @questions = Question.all
@@ -11,6 +12,8 @@ class QuestionsController < ApplicationController
     @comment = @question.comments.build
     @answer.attachments.build
     @attachments_size_question = @question.attachments.size
+    gon.question_id = @question.id
+    gon.user_id = current_user.id if current_user
   end
 
   def new
@@ -29,6 +32,11 @@ class QuestionsController < ApplicationController
       redirect_to question_url(@question_form.question), notice: 'Your question successfully created.'
     else
       @question = Question.new(title: @question_form[:title], body: @question_form[:body])
+      question_errors = []
+      @question_form.errors.messages.each do |key, value|
+        question_errors.push(key.to_s.capitalize + ' ' + value.first)
+      end
+      flash[:alert] = "Ошибка: #{question_errors}"
       render :new
     end
   end
@@ -55,6 +63,18 @@ class QuestionsController < ApplicationController
 
   def load_question
     @question = Question.find(params[:id])
+  end
+
+  def publish_question
+    return if @question_form.errors.any?
+
+    ActionCable.server.broadcast(
+      'questions',
+      ApplicationController.render(
+        partial: 'questions/question_form',
+        locals: { question: @question_form.question }
+      )
+    )
   end
 
   def question_params

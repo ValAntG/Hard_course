@@ -8,14 +8,19 @@ class CommentsController < ApplicationController
     @answer = Answer.find(params[:answer_id]) if params[:answer_id]
     @commentable = @answer || @question
     @comment = @commentable.comments.build(comment_params.merge(user: current_user))
+    gon.commentable = @commentable
+    gon.commentable_id = @commentable.id
     respond_to do |format|
       if @comment.save
         format.js
         format.json { render json: { comment: @comment } }
-        format.html { render partial: 'questions/comments_show', commentable: @commentable, layout: false }
+        format.html { render partial: 'comments/comments_show', commentable: @commentable, layout: false }
+        @question = @comment.commentable.question if @question.nil?
+        publish_comment @comment, @question.id, 'create' unless @comment.errors.any?
       else
         format.json { render json: @comment.errors.full_messages, status: :unprocessable_entity }
         format.html { render plain: @comment.errors.full_messages.join("\n"), status: :unprocessable_entity }
+        format.js
       end
     end
   end
@@ -34,12 +39,17 @@ class CommentsController < ApplicationController
 
   private
 
+  def publish_comment(comment, question_id, action)
+    ActionCable.server.broadcast(
+      "questions/#{question_id}/comments", {
+        comment: CommentSerializer.new(comment), action: action, commentable_type: comment.commentable_type,
+        commentable_id: comment.commentable_id
+      }.as_json
+    )
+  end
+
   def load_elements
     @comment = Comment.find(params[:id])
-    #while @question.class != Question
-    #  @question = @comment.commentable
-    #  @question = @comment.commentable.question
-    #end
     @question = @comment.commentable
     @question = @comment.commentable.question unless @comment.commentable.class == Question
   end

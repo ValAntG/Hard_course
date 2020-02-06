@@ -11,9 +11,11 @@ feature 'User answer', '
     sign_in(user)
     visit question_path(question)
 
-    fill_in 'Your answer', with: 'My answer'
-    click_on 'Create answer'
-
+    click_on 'Ответить'
+    within '.new_answer' do
+      fill_in 'Your answer', with: 'My answer'
+      click_on 'Create answer'
+    end
     expect(current_path).to eq question_path(question)
     within '.answers' do
       expect(page).to have_content 'My answer'
@@ -23,8 +25,10 @@ feature 'User answer', '
   scenario 'User try to create invalid answer', js: true do
     sign_in(user)
     visit question_path(question)
-    click_on 'Create answer'
-
+    click_on 'Ответить'
+    within '.new_answer' do
+      click_on 'Create answer'
+    end
     expect(page).to have_content "Body can't be blank"
   end
 end

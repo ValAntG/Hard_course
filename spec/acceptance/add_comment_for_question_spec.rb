@@ -11,11 +11,14 @@ feature 'Add comment for question', '
     sign_in(user)
     visit question_path(question)
 
-    fill_in 'Your comment', with: 'My comment'
+    within '.commentsForQuestion' do
+      click_on 'Комментировать'
+      within '.new_comment' do
+        fill_in 'comment[body]', with: 'My comment'
+        click_on 'Create comment'
 
-    click_on 'Create comment'
-    question_path(question)
-    within '.comments' do
+        expect(current_path).to eq question_path(question)
+      end
       expect(page).to have_content 'My comment'
     end
   end
@@ -23,8 +26,14 @@ feature 'Add comment for question', '
   scenario 'User try to create invalid answer', js: true do
     sign_in(user)
     visit question_path(question)
-    click_on 'Create comment'
 
-    expect(page).to have_content "Body can't be blank"
+    within '.commentsForQuestion' do
+      click_on 'Комментировать'
+      within '.new_comment' do
+        fill_in 'comment[body]', with: ''
+        click_on 'Create comment'
+      end
+      expect(page).to have_content "Body can't be blank"
+    end
   end
 end

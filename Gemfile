@@ -3,17 +3,22 @@ git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
 ruby '2.6.3'
 
+gem 'actioncable', '~> 5.0', '>= 5.0.2'
+gem 'active_model_serializers'
 gem 'carrierwave'
 gem 'cocoon'
+gem 'gon'
 gem 'jquery-rails', '>= 4.3.5'
 gem 'less-rails', git: 'https://github.com/MustafaZain/less-rails'
 gem 'pry', '~> 0.12.2'
 gem 'pundit'
 gem 'remotipart', github: 'jbox-web/remotipart', tag: '1.5.0'
 gem 'therubyracer'
+# gem 'thin'
 gem 'twitter-bootstrap-rails'
 gem 'virtus', '~> 1.0', '>= 1.0.5'
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
+gem 'rabl-rails'
 gem 'rails', '~> 5.2.3'
 # Use postgresql as the database for Active Record
 gem 'pg', '>= 0.18', '< 2.0'
@@ -51,6 +56,7 @@ gem 'devise'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
+  gem 'action-cable-testing'
   gem 'byebug', platforms: %i[mri mingw x64_mingw]
   gem 'capybara', '~> 3.29'
   gem 'capybara-webkit', github: 'thoughtbot/capybara-webkit', branch: 'master'
@@ -62,6 +68,7 @@ group :development, :test do
   gem 'scss_lint', require: false
   gem 'slim_lint'
   # Adds support for Capybara system testing and selenium driver
+  gem 'json_spec'
   gem 'shoulda-matchers'
 end
 

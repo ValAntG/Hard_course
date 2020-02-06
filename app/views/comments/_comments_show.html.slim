@@ -1,0 +1,9 @@
+.form-horizontal id = "commentShow-#{comment.id}"
+  .form-group
+    .col-sm-3 = label '', 'Комментарий:', class: 'form-control control-label label-warning'
+    .col-sm-9 = label '', comment.body, class: 'form-control', id: "comment_body_#{comment.id}"
+
+  - if current_user == comment.user
+    = link_to 'Edit comment', '', class: 'btn btn-info form-control edit-comment-link', data: { comment_id: comment.id }
+    = link_to 'Delete comment', comment, method: :delete,
+            data: { confirm: 'Вы действительно хотите удалить?' }, class: 'btn btn-danger form-control edit-comment-link'

@@ -1,5 +1,6 @@
 class AnswersController < ApplicationController
   before_action :load_elements, only: %i[update destroy]
+  # after_action :publish_answer, only: [:create]
 
   def show; end
 
@@ -9,12 +10,14 @@ class AnswersController < ApplicationController
     respond_to do |format|
       if @answer_form.save
         @comment = @answer_form[:answer].comments.build(user_id: current_user.id)
-        format.html { render partial: 'questions/answers_show', layout: false }
         format.js
+        format.html { render partial: 'answers/answers_show', layout: false }
         format.json { render json: { answer: @answer_form, attachments: @answer_form.answer.attachments } }
+        publish_answer @answer_form.answer, params[:question_id], 'create' unless @answer_form.errors.any?
       else
         format.html { render plain: @answer_form.errors.full_messages.join("\n"), status: :unprocessable_entity }
         format.json { render json: @answer_form.errors.full_messages, status: :unprocessable_entity }
+        format.js
       end
     end
   end
@@ -40,6 +43,13 @@ class AnswersController < ApplicationController
   def load_elements
     @answer = Answer.find(params[:id])
     @question = @answer.question
+  end
+
+  def publish_answer(answer, question, action)
+    ActionCable.server.broadcast(
+      "questions/#{question}/answers",
+      { answer: AnswerSerializer.new(answer), action: action }.as_json
+    )
   end
 
   def answer_params

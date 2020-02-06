@@ -21,7 +21,7 @@ RSpec.describe AnswersController, type: :controller do
 
       it 'render create template, send format: html' do
         post :create, params: { answer: attributes_for(:answer), question_id: question, format: :html }
-        expect(response).to render_template(partial: 'questions/_answers_show')
+        expect(response).to render_template(partial: 'answers/_answers_show')
       end
 
       it 'render create template, send format: json' do
@@ -49,7 +49,7 @@ RSpec.describe AnswersController, type: :controller do
 
       it 'redirects to question show view, send format: html' do
         post :create, params: { answer: attributes_for(:invalid_answer), question_id: question, format: :html }
-        expect(response).to_not render_template(partial: 'questions/_answers_show')
+        expect(response).to_not render_template(partial: 'answers/_answers_show')
       end
 
       it 'redirects to question show view, send format: json' do

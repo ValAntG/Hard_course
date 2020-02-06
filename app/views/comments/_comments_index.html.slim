@@ -1,0 +1,5 @@
+.comments-index-form
+  - commentable.comments.order(created_at: :asc).each do |comment|
+    - if comment.persisted?
+      = render 'comments/comments_show', comment: comment
+      = render 'comments/comments_edit', comment: comment

@@ -7,20 +7,68 @@ feature 'Create question', '
 ' do
   given(:user) { create(:user) }
 
-  scenario 'Authenticated user creates question' do
-    sign_in(user)
+  context 'as user' do
+    background do
+      sign_in(user)
+      visit questions_path
+    end
 
-    visit questions_path
-    click_on 'Ask question'
+    scenario 'Authenticated user creates question with valid params', js: true do
+      click_on 'Ask question'
 
-    fill_in 'question_title', with: 'Text question'
-    fill_in 'question_body', with: 'text text'
-    click_on 'Save'
+      fill_in 'question_title', with: 'Text question'
+      fill_in 'question_body', with: 'text text'
+      click_on 'Save'
 
-    expect(page).to have_content 'Your question successfully created.'
+      expect(page).to have_content 'Your question successfully created.'
+      expect(page).to have_content 'Text question'
+      expect(page).to have_content 'text text'
+    end
+
+    scenario 'Authenticated user creates question with invalid params', js: true do
+      click_on 'Ask question'
+
+      fill_in 'question_title', with: ''
+      fill_in 'question_body', with: ''
+      click_on 'Save'
+
+      expect(page).to have_content 'Title can\'t be blank'
+      expect(page).to have_content 'Body can\'t be blank'
+    end
   end
 
-  scenario 'Non-authenticated user ties to create question' do
+  context 'multiple sessions' do
+    scenario "question appears on another user's page", js: true do
+      Capybara.using_session('user') do
+        sign_in(user)
+        visit questions_path
+      end
+
+      Capybara.using_session('guest') do
+        visit questions_path
+      end
+
+      Capybara.using_session('user') do
+        click_on 'Ask question'
+
+        fill_in 'question_title', with: 'Text question'
+        fill_in 'question_body', with: 'text text'
+        click_on 'Save'
+
+        expect(page).to have_content 'Your question successfully created.'
+        expect(page).to have_content 'Text question'
+        expect(page).to have_content 'text text'
+      end
+
+      Capybara.using_session('guest') do
+        within '.col-lg-9' do
+          expect(page).to have_content 'Text question'
+        end
+      end
+    end
+  end
+
+  scenario 'Non-authenticated user ties to create question', js: true do
     visit questions_path
     click_on 'Ask question'
 
