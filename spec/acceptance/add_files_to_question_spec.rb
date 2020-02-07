@@ -1,24 +1,23 @@
 require_relative 'acceptance_helper'
 
-feature 'Add files to question', "
-  In order to illustrate my question
-  As an question's author
-  I'd like to be able to attach files
-" do
-  given(:user) { create(:user) }
+RSpec.describe 'Add files to question', type: :feature do
+  let(:user) { create(:user) }
 
-  background do
-    sign_in(user)
-    visit new_question_path
-  end
+  context 'when add attachment for question', js: true do
+    before do
+      sign_in(user)
+      visit new_question_path
 
-  scenario 'User adds file when asks question', js: true do
-    fill_in 'question_title', with: 'Test question'
-    fill_in 'question_body', with: 'text text text'
+      fill_in 'question_title', with: 'Test question'
+      fill_in 'question_body', with: 'text text text'
 
-    attach_file 'File', "#{Rails.root}/spec/spec_helper.rb"
+      attach_file 'File', "#{Rails.root}/spec/spec_helper.rb"
 
-    click_on 'Save'
-    expect(page).to have_link('spec_helper.rb', href: '/uploads/attachment/file/1/spec_helper.rb')
+      click_on 'Save'
+    end
+
+    it 'visible link for attachment on this page' do
+      expect(page).to have_link('spec_helper.rb', href: '/uploads/attachment/file/1/spec_helper.rb')
+    end
   end
 end

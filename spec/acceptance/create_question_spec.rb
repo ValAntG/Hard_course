@@ -1,44 +1,68 @@
 require_relative 'acceptance_helper'
 
-feature 'Create question', '
-  In order to get answer from community
-  As an authenticated user
-  I want to be able to ask questions
-' do
-  given(:user) { create(:user) }
+RSpec.describe 'Create question', type: :feature do
+  let(:user) { create(:user) }
 
-  context 'as user' do
-    background do
+  describe 'Authenticated user creates question' do
+    before do
       sign_in(user)
       visit questions_path
     end
 
-    scenario 'Authenticated user creates question with valid params', js: true do
-      click_on 'Ask question'
+    context 'with valid params' do
+      before do
+        click_on 'Ask question'
 
-      fill_in 'question_title', with: 'Text question'
-      fill_in 'question_body', with: 'text text'
-      click_on 'Save'
+        fill_in 'question_title', with: 'Text question'
+        fill_in 'question_body', with: 'text text'
+        click_on 'Save'
+      end
 
-      expect(page).to have_content 'Your question successfully created.'
-      expect(page).to have_content 'Text question'
-      expect(page).to have_content 'text text'
+      it 'visible flash message', js: true do
+        expect(page).to have_content 'Your question successfully created.'
+      end
+
+      it "visible text for title question's", js: true do
+        expect(page).to have_content 'Text question'
+      end
+
+      it "visible text for body question's", js: true do
+        expect(page).to have_content 'text text'
+      end
     end
 
-    scenario 'Authenticated user creates question with invalid params', js: true do
-      click_on 'Ask question'
+    context 'with invalid params' do
+      before do
+        click_on 'Ask question'
 
-      fill_in 'question_title', with: ''
-      fill_in 'question_body', with: ''
-      click_on 'Save'
+        fill_in 'question_title', with: ''
+        fill_in 'question_body', with: ''
+        click_on 'Save'
+      end
 
-      expect(page).to have_content 'Title can\'t be blank'
-      expect(page).to have_content 'Body can\'t be blank'
+      it "visible flash message 'Title can't be blank'", js: true do
+        expect(page).to have_content 'Title can\'t be blank'
+      end
+
+      it "visible flash message 'Body can't be blank'", js: true do
+        expect(page).to have_content 'Body can\'t be blank'
+      end
     end
   end
 
-  context 'multiple sessions' do
-    scenario "question appears on another user's page", js: true do
+  describe 'Non-authenticated user ' do
+    before do
+      visit questions_path
+      click_on 'Ask question'
+    end
+
+    it 'when trying to create question visible flash message' do
+      expect(page).to have_content 'You need to sign in or sign up before continuing.'
+    end
+  end
+
+  describe 'multiple sessions', js: true do
+    before do
       Capybara.using_session('user') do
         sign_in(user)
         visit questions_path
@@ -54,24 +78,35 @@ feature 'Create question', '
         fill_in 'question_title', with: 'Text question'
         fill_in 'question_body', with: 'text text'
         click_on 'Save'
+      end
+    end
 
-        expect(page).to have_content 'Your question successfully created.'
-        expect(page).to have_content 'Text question'
-        expect(page).to have_content 'text text'
+    context "when question appears on another user's page" do
+      it 'visible flash message in user', js: true do
+        Capybara.using_session('user') do
+          expect(page).to have_content 'Your question successfully created.'
+        end
       end
 
-      Capybara.using_session('guest') do
-        within '.col-lg-9' do
+      it "visible text for title question's in user", js: true do
+        Capybara.using_session('user') do
           expect(page).to have_content 'Text question'
         end
       end
+
+      it "visible text for body question's in user", js: true do
+        Capybara.using_session('user') do
+          expect(page).to have_content 'text text'
+        end
+      end
+
+      it "visible text for body question's in guest", js: true do
+        Capybara.using_session('guest') do
+          within '.col-lg-9' do
+            expect(page).to have_content 'Text question'
+          end
+        end
+      end
     end
-  end
-
-  scenario 'Non-authenticated user ties to create question', js: true do
-    visit questions_path
-    click_on 'Ask question'
-
-    expect(page).to have_content 'You need to sign in or sign up before continuing.'
   end
 end

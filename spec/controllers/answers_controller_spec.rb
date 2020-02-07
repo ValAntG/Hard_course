@@ -2,19 +2,22 @@ require 'rails_helper'
 
 RSpec.describe AnswersController, type: :controller do
   let!(:user) { create :user }
-  before { sign_in_user(user) }
   let!(:question) { create :question }
+
+  before { sign_in_user(user) }
 
   describe 'POST #create' do
     context 'with valid attributes' do
-      it 'saves the new answer in the database, send format: html' do
+      it 'successful response received' do
         expect(response).to be_success
+      end
+
+      it 'saves the new answer in the database, send format: html' do
         expect { post :create, params: { answer: attributes_for(:answer), question_id: question, format: :html } }
           .to change(question.answers, :count).by(1)
       end
 
       it 'saves the new answer in the database, send format: json' do
-        expect(response).to be_success
         expect { post :create, params: { answer: attributes_for(:answer), question_id: question, format: :json } }
           .to change(question.answers, :count).by(1)
       end
@@ -27,6 +30,10 @@ RSpec.describe AnswersController, type: :controller do
       it 'render create template, send format: json' do
         post :create, params: { answer: attributes_for(:answer), question_id: question, format: :json }
         expect(response).to be_success
+      end
+
+      it 'render create template, parsed response, send format: json' do
+        post :create, params: { answer: attributes_for(:answer), question_id: question, format: :json }
         parsed_response = JSON.parse(response.body)
         expect(parsed_response['answer']['body']).to eq('AnswerText')
       end
@@ -37,24 +44,28 @@ RSpec.describe AnswersController, type: :controller do
         expect do
           post :create, params: { answer: attributes_for(:invalid_answer), question_id: question, format: :html }
         end
-          .to_not change(question.answers, :count)
+          .not_to change(question.answers, :count)
       end
 
       it 'does not save the answer, send format: json' do
         expect do
           post :create, params: { answer: attributes_for(:invalid_answer), question_id: question, format: :json }
         end
-          .to_not change(question.answers, :count)
+          .not_to change(question.answers, :count)
       end
 
       it 'redirects to question show view, send format: html' do
         post :create, params: { answer: attributes_for(:invalid_answer), question_id: question, format: :html }
-        expect(response).to_not render_template(partial: 'answers/_answers_show')
+        expect(response).not_to render_template(partial: 'answers/_answers_show')
       end
 
       it 'redirects to question show view, send format: json' do
         post :create, params: { answer: attributes_for(:invalid_answer), question_id: question, format: :json }
-        expect(response).to have_http_status(422)
+        expect(response).to have_http_status(:unprocessable_entity)
+      end
+
+      it 'redirects to question show view, parsed response, send format: json' do
+        post :create, params: { answer: attributes_for(:invalid_answer), question_id: question, format: :json }
         parsed_response = JSON.parse(response.body)
         expect(parsed_response.first).to eq("Body can't be blank")
       end
@@ -63,6 +74,11 @@ RSpec.describe AnswersController, type: :controller do
 
   describe 'PATCH #update' do
     let!(:answer) { create(:answer, question: question, user: user) }
+
+    it 'successful response received' do
+      expect(response).to be_success
+    end
+
     it 'assings the requested answer to @answer' do
       patch :update, params: { id: answer.id, question_id: question.id, answer: attributes_for(:answer), format: :js }
       expect(assigns(:answer)).to eq answer
@@ -87,9 +103,11 @@ RSpec.describe AnswersController, type: :controller do
 
   describe 'DELETE #destroy' do
     let!(:user) { create :user }
-    before { sign_in_user(user) }
     let!(:question) { create(:question) }
     let!(:answer) { create(:answer, question_id: question.id, user_id: user.id) }
+
+    before { sign_in_user(user) }
+
     it 'deletes answer' do
       answer
       expect { delete :destroy, params: { id: answer.id, question_id: question.id } }

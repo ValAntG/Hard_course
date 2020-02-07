@@ -14,7 +14,6 @@ gem 'pry', '~> 0.12.2'
 gem 'pundit'
 gem 'remotipart', github: 'jbox-web/remotipart', tag: '1.5.0'
 gem 'therubyracer'
-# gem 'thin'
 gem 'twitter-bootstrap-rails'
 gem 'virtus', '~> 1.0', '>= 1.0.5'
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
@@ -65,6 +64,7 @@ group :development, :test do
   gem 'rails-controller-testing'
   gem 'rspec-rails'
   gem 'rubocop-rails'
+  gem 'rubocop-rspec', require: false
   gem 'scss_lint', require: false
   gem 'slim_lint'
   # Adds support for Capybara system testing and selenium driver

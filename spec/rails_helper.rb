@@ -3,7 +3,6 @@ require 'spec_helper'
 ENV['RAILS_ENV'] ||= 'test'
 require 'shoulda-matchers'
 require File.expand_path('../config/environment', __dir__)
-
 require 'capybara/rails'
 require 'capybara/rspec'
 require 'selenium/webdriver'

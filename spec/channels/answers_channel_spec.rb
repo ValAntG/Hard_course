@@ -8,10 +8,15 @@ RSpec.describe AnswersChannel, type: :channel do
     stub_connection user_id: user.id
   end
 
-  it 'subscribes to a stream is provided' do
-    subscribe(question_id: question.id)
+  context 'when subscribes to' do
+    it 'a stream is provided' do
+      subscribe(question_id: question.id)
+      expect(streams).to include("questions/#{question.id}/answers")
+    end
 
-    expect(subscription).to be_confirmed
-    expect(streams).to include("questions/#{question.id}/answers")
+    it 'be confirmed' do
+      subscribe(question_id: question.id)
+      expect(subscription).to be_confirmed
+    end
   end
 end

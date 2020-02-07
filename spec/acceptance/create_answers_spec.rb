@@ -1,34 +1,44 @@
 require_relative 'acceptance_helper'
 
-feature 'User answer', '
-  In order to exchange my knowledge
-  As an authenticated user
-  I want to be able to create answers
-' do
-  given(:user) { create(:user) }
-  given(:question) { create(:question) }
-  scenario 'Authenticated user create answer', js: true do
-    sign_in(user)
-    visit question_path(question)
+RSpec.describe 'Create answer', type: :feature do
+  let(:user) { create(:user) }
+  let(:question) { create(:question) }
 
-    click_on 'Ответить'
-    within '.new_answer' do
-      fill_in 'Your answer', with: 'My answer'
-      click_on 'Create answer'
+  context 'when authenticated user create valid answer', js: true do
+    before do
+      sign_in(user)
+      visit question_path(question)
+
+      click_on 'Ответить'
+      within '.new_answer' do
+        fill_in 'Your answer', with: 'My answer'
+        click_on 'Create answer'
+      end
     end
-    expect(current_path).to eq question_path(question)
-    within '.answers' do
-      expect(page).to have_content 'My answer'
+
+    it 'redirected to the question page' do
+      expect(page).to have_current_path question_path(question)
+    end
+
+    it 'visible text for text answer' do
+      within '.answers' do
+        expect(page).to have_content 'My answer'
+      end
     end
   end
 
-  scenario 'User try to create invalid answer', js: true do
-    sign_in(user)
-    visit question_path(question)
-    click_on 'Ответить'
-    within '.new_answer' do
-      click_on 'Create answer'
+  context 'when authenticated user create invalid answer', js: true do
+    before do
+      sign_in(user)
+      visit question_path(question)
+      click_on 'Ответить'
+      within '.new_answer' do
+        click_on 'Create answer'
+      end
     end
-    expect(page).to have_content "Body can't be blank"
+
+    it 'visible flash message' do
+      expect(page).to have_content "Body can't be blank"
+    end
   end
 end

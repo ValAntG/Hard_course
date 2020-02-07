@@ -32,8 +32,6 @@ class AnswersController < ApplicationController
 
   def destroy
     authorize @answer
-    @answer.comments.destroy_all
-    @answer.attachments.destroy_all
     @answer.destroy
     redirect_to question_path(@question.id)
   end

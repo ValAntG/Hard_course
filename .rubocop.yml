@@ -1,5 +1,10 @@
 # Rails:
 #   Enabled: true
+require: rubocop-rspec
+
+RSpec/ImplicitExpect:
+  Enabled: true
+  EnforcedStyle: should
 
 AllCops:
   Exclude:

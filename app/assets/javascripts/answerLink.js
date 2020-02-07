@@ -31,13 +31,13 @@ function formAnswer(answer) {
   $('#answerShow-' + answer.id).append('<div class="form-group"></div>');
   $('#answerShow-' + answer.id).find('.form-group').append('<div class="col-sm-3"></div>');
   const lableAnswer = $('<label>').attr({
-    class: "form-control control-label label-warning",
+    class: 'form-control control-label label-warning',
   }).text('Ответ:');
   $('#answerShow-' + answer.id).find('.form-group').find('.col-sm-3').append(lableAnswer)
   $('#answerShow-' + answer.id).find('.form-group').append('<div class="col-sm-9"></div>');
   var lableAnswerBody = $('<label>').attr({
-    class: "form-control",
-    id: "answer_body_" + answer.id
+    class: 'form-control',
+    id: 'answer_body_' + answer.id
   }).text(answer.body);
   $('#answerShow-' + answer.id).find('.form-group').find('.col-sm-9').append(lableAnswerBody);
 };
@@ -46,7 +46,7 @@ function formAttachment(answer) {
   $('#answerShow-' + answer.id).append('<div class="form-group"></div>');
   $('#answerShow-' + answer.id).find('.form-group').last().append('<div class="col-sm-3"></div>');
   const lableAttachments = $('<label>').attr({
-    class: "form-control control-label label-warning",
+    class: 'form-control control-label label-warning',
   }).text('Attachments:');
   $('#answerShow-' + answer.id).find('.form-group').last().find('.col-sm-3').append(lableAttachments)
 
@@ -63,21 +63,17 @@ function buttonAnswer(answer) {
   $('#answerShow-' + answer.id).append('<div class="form-group"></div>');
 
   var buttonEdit = $('<a>').attr({
-    class: "btn btn-info form-control edit-answer-link",
-    "data-answer-id": answer.id,
+    class: 'btn btn-info form-control edit-answer-link',
+    'data-answer-id': answer.id,
   }).text('Edit answer');
   $('#answerShow-' + answer.id).find('.form-group').last().append(buttonEdit)
 
   var buttonDelete = $('<a>').attr({
-    "data-confirm": "Вы действительно хотите удалить?",
-    class: "btn btn-danger form-control edit-answer-link",
-    rel: "nofollow",
-    "data-method": "delete",
-    href: "/answers/" + answer.id,
+    'data-confirm': 'Вы действительно хотите удалить?',
+    class: 'btn btn-danger form-control edit-answer-link',
+    rel: 'nofollow',
+    'data-method': 'delete',
+    href: '/answers/' + answer.id,
   }).text('Delete answer');
   $('#answerShow-' + answer.id).find('.form-group').last().append(buttonDelete)
-};
-
-function commentForCommentable(answer) {
-
 };
