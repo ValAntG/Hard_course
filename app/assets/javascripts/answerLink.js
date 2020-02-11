@@ -1,6 +1,6 @@
-$(document).on("turbolinks:load", function () {
+$(document).on('turbolinks:load', function () {
   $('a.edit-answer-link').on('click ajax:success', toggleEditAnswerMode);
-  App.cable.subscriptions.create({channel: 'AnswersChannel', question_id: gon.question_id},
+  App.cable.subscriptions.create({ channel: 'AnswersChannel', question_id: gon.question_id },
     {
       received(data) {
         if (data.action == 'create') { AnswerCreate(data.answer) };

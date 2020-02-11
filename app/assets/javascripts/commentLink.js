@@ -1,6 +1,6 @@
-$(document).on("turbolinks:load", function () {
+$(document).on('turbolinks:load', function () {
   $('a.edit-comment-link').on('click ajax:success', toggleEditCommentMode);
-  App.cable.subscriptions.create({channel: 'CommentsChannel', question_id: gon.question_id},
+  App.cable.subscriptions.create({ channel: 'CommentsChannel', question_id: gon.question_id },
     {
       received(data) {
         if (data.action == 'create') { CommentCreate(data) };
