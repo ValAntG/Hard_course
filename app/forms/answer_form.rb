@@ -19,6 +19,7 @@ class AnswerForm
       save_answer
       save_attachment unless attachments.empty?
       @id = answer.id
+      build_comment
       true
     else
       false
@@ -55,5 +56,9 @@ class AnswerForm
 
   def del_attachment
     Attachment.find(attachments[:id]).delete
+  end
+
+  def build_comment
+    @comment = @answer.comments.build(user_id: user_id)
   end
 end

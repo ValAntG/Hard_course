@@ -4,19 +4,13 @@ class CommentsController < ApplicationController
   def show; end
 
   def create
-    @question = Question.find(params[:question_id]) if params[:question_id]
-    @answer = Answer.find(params[:answer_id]) if params[:answer_id]
-    @commentable = @answer || @question
-    @comment = @commentable.comments.build(comment_params.merge(user: current_user))
-    gon.commentable = @commentable
-    gon.commentable_id = @commentable.id
+    @comment = Comment.new(comment_params.merge(user: current_user))
     respond_to do |format|
       if @comment.save
         format.js
         format.json { render json: { comment: @comment } }
-        format.html { render partial: 'comments/comments_show', commentable: @commentable, layout: false }
-        @question = @comment.commentable.question if @question.nil?
-        publish_comment @comment, @question.id, 'create' unless @comment.errors.any?
+        format.html { render partial: 'comments/comments_show', locals: { comment: @comment }, layout: false }
+        publish_comment @comment, question_id_params, 'create' unless @comment.errors.any?
       else
         format.json { render json: @comment.errors.full_messages, status: :unprocessable_entity }
         format.html { render plain: @comment.errors.full_messages.join("\n"), status: :unprocessable_entity }
@@ -27,14 +21,20 @@ class CommentsController < ApplicationController
 
   def update
     authorize @comment
-    @comment.update(comment_params)
-    redirect_to @question
+    if @comment.update(comment_params)
+      redirect_to question_path(question_id_params)
+    else
+      render :edit
+    end
   end
 
   def destroy
     authorize @comment
-    @comment.destroy
-    redirect_to question_path(@question.id)
+    if @comment.destroy
+      redirect_to question_path(question_id_params)
+    else
+      render :edit
+    end
   end
 
   private
@@ -50,11 +50,13 @@ class CommentsController < ApplicationController
 
   def load_elements
     @comment = Comment.find(params[:id])
-    @question = @comment.commentable
-    @question = @comment.commentable.question unless @comment.commentable.class == Question
   end
 
   def comment_params
-    params.require(:comment).permit(:body)
+    params.require(:comment).permit(:body, :commentable_type, :commentable_id)
+  end
+
+  def question_id_params
+    params[:comment][:question_id].to_i
   end
 end

@@ -1,17 +1,15 @@
 class AnswersController < ApplicationController
   before_action :load_elements, only: %i[update destroy]
-  # after_action :publish_answer, only: [:create]
 
   def show; end
 
   def create
-    @question = Question.find(params[:question_id])
-    @answer_form = AnswerForm.new(answer_params.merge(user_id: current_user.id, question_id: @question.id))
+    question_id = params[:question_id].to_i
+    @answer_form = AnswerForm.new(answer_params.merge(user_id: current_user.id, question_id: question_id))
     respond_to do |format|
       if @answer_form.save
-        @comment = @answer_form[:answer].comments.build(user_id: current_user.id)
         format.js
-        format.html { render partial: 'answers/answers_show', layout: false }
+        format.html { render partial: 'answers/answers_show', locals: { answer: @answer_form.answer }, layout: false }
         format.json { render json: { answer: @answer_form, attachments: @answer_form.answer.attachments } }
         publish_answer @answer_form.answer, params[:question_id], 'create' unless @answer_form.errors.any?
       else

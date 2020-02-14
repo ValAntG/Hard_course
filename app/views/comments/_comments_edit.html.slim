@@ -6,5 +6,7 @@
   .form-group
     .col-sm-3 = comment.label :body, 'My comment', class: 'form-control control-label label-success'
     .col-sm-9 = comment.text_area :body, class: 'form-control', id: "comment_body_#{comment.object.id}"
-
+  = comment.hidden_field :question_id, value: @question.id
+  = comment.hidden_field :commentable_type, value: comment.object.commentable_type
+  = comment.hidden_field :commentable_id, value: comment.object.commentable.id
   = comment.submit 'Save', class: 'form-control label-info edit-comment'

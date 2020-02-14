@@ -1,8 +1,8 @@
 require 'rails_helper'
 
 RSpec.describe CommentsChannel, type: :channel do
-  let!(:user) { create :user }
-  let!(:question) { create :question }
+  let(:user) { create :user }
+  let(:question) { create :question }
 
   before do
     stub_connection user_id: user.id

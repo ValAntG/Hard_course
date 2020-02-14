@@ -1,8 +1,8 @@
 require 'rails_helper'
 
 RSpec.describe AnswersChannel, type: :channel do
-  let!(:user) { create :user }
-  let!(:question) { create :question }
+  let(:user) { create :user }
+  let(:question) { create :question }
 
   before do
     stub_connection user_id: user.id

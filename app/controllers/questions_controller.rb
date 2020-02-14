@@ -11,8 +11,6 @@ class QuestionsController < ApplicationController
     @comment = @question.comments.build
     @answer.attachments.build
     @attachments_size_question = @question.attachments.size
-    gon.question_id = @question.id
-    gon.user_id = current_user.id if current_user
   end
 
   def new

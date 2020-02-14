@@ -5,5 +5,5 @@
 
   - if current_user == comment.user
     = link_to 'Edit comment', '', class: 'btn btn-info form-control edit-comment-link', data: { comment_id: comment.id }
-    = link_to 'Delete comment', comment, method: :delete,
-            data: { confirm: 'Вы действительно хотите удалить?' }, class: 'btn btn-danger form-control edit-comment-link'
+    = link_to 'Delete comment', comment_path(comment, comment: { question_id: @question.id }), method: :delete,
+      data: { confirm: 'Вы действительно хотите удалить?' }, class: 'btn btn-danger form-control edit-comment-link'

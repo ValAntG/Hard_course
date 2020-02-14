@@ -1,15 +1,15 @@
 require 'rails_helper'
 
 RSpec.describe AnswersController, type: :controller do
-  let!(:user) { create :user }
-  let!(:question) { create :question }
+  let(:user) { create :user }
+  let(:question) { create :question }
 
   before { sign_in_user(user) }
 
   describe 'POST #create' do
     context 'with valid attributes' do
       it 'successful response received' do
-        expect(response).to be_success
+        expect(response).to be_successful
       end
 
       it 'saves the new answer in the database, send format: html' do
@@ -29,7 +29,7 @@ RSpec.describe AnswersController, type: :controller do
 
       it 'render create template, send format: json' do
         post :create, params: { answer: attributes_for(:answer), question_id: question, format: :json }
-        expect(response).to be_success
+        expect(response).to be_successful
       end
 
       it 'render create template, parsed response, send format: json' do
@@ -73,10 +73,10 @@ RSpec.describe AnswersController, type: :controller do
   end
 
   describe 'PATCH #update' do
-    let!(:answer) { create(:answer, question: question, user: user) }
+    let(:answer) { create(:answer, question: question, user: user) }
 
     it 'successful response received' do
-      expect(response).to be_success
+      expect(response).to be_successful
     end
 
     it 'assings the requested answer to @answer' do
@@ -102,9 +102,9 @@ RSpec.describe AnswersController, type: :controller do
   end
 
   describe 'DELETE #destroy' do
-    let!(:user) { create :user }
-    let!(:question) { create(:question) }
-    let!(:answer) { create(:answer, question_id: question.id, user_id: user.id) }
+    let(:user) { create :user }
+    let(:question) { create(:question) }
+    let(:answer) { create(:answer, question_id: question.id, user_id: user.id) }
 
     before { sign_in_user(user) }
 

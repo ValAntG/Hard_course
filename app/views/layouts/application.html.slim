@@ -34,6 +34,8 @@ html lang="en"
       .row
         .col-lg-9
           = bootstrap_flash
+          - if current_user
+            .user id = 'user_id' data-attribute = "#{current_user.id}"
           = yield
         .col-lg-3
           .well.sidebar-nav

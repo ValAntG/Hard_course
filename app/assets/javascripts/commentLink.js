@@ -1,18 +1,21 @@
 $(document).on('turbolinks:load', function () {
   $('a.edit-comment-link').on('click ajax:success', toggleEditCommentMode);
-  App.cable.subscriptions.create({ channel: 'CommentsChannel', question_id: gon.question_id },
-    {
-      received(data) {
-        if (data.action == 'create') { CommentCreate(data) };
-      }
-    });
+  if ($('.question-show-button')[0]) {
+    const questionId = $('.question-show-button')[0].id.split('-')[1];
+    App.cable.subscriptions.create({ channel: 'CommentsChannel', question_id: questionId },
+      {
+        received(data) {
+          if (data.action == 'create') { CommentCreate(data) };
+        }
+      });
+  }
 });
 
 function CommentCreate(data) {
-
+  const userId = $('#user_id').attr('data-attribute');
   newComment(data);
   formComment(data.comment);
-  if (data.comment.user_id == gon.user_id) { buttonСomment(data.comment) };
+  if (data.comment.user_id == Number(userId)) { buttonСomment(data.comment) };
 };
 
 function newComment(data) {

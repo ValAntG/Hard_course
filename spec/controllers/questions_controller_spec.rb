@@ -38,7 +38,7 @@ RSpec.describe QuestionsController, type: :controller do
   end
 
   describe 'GET #new' do
-    let!(:user) { create :user }
+    let(:user) { create :user }
 
     before do
       sign_in_user(user)
@@ -59,7 +59,7 @@ RSpec.describe QuestionsController, type: :controller do
   end
 
   describe 'GET #edit' do
-    let!(:user) { create :user }
+    let(:user) { create :user }
     let(:question) { create(:question) }
 
     before do
@@ -77,7 +77,7 @@ RSpec.describe QuestionsController, type: :controller do
   end
 
   describe 'POST #create' do
-    let!(:user) { create :user }
+    let(:user) { create :user }
 
     before { sign_in_user(user) }
 
@@ -112,7 +112,7 @@ RSpec.describe QuestionsController, type: :controller do
   end
 
   describe 'PATCH #update' do
-    let!(:user) { create :user }
+    let(:user) { create :user }
 
     before { sign_in_user(user) }
 
@@ -163,9 +163,9 @@ RSpec.describe QuestionsController, type: :controller do
     end
 
     context 'when user edit questions' do
-      let!(:question) { create(:question, user: user) }
-      let!(:user2) { create :user }
-      let!(:question2) { create(:question, user: user2) }
+      let(:question) { create(:question, user: user) }
+      let(:user2) { create :user }
+      let(:question2) { create(:question, user: user2) }
 
       before { sign_in_user(user2) }
 
@@ -196,9 +196,9 @@ RSpec.describe QuestionsController, type: :controller do
   end
 
   describe 'DELETE #destroy' do
-    let!(:user) { create :user }
-    let!(:question) { create(:question) }
-    let!(:answer) { create(:answer, question_id: question.id, user_id: user.id) }
+    let(:user) { create :user }
+    let(:question) { create(:question) }
+    let(:answer) { create(:answer, question_id: question.id, user_id: user.id) }
 
     before do
       sign_in_user(user)
