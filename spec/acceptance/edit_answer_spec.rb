@@ -1,10 +1,9 @@
 require_relative 'acceptance_helper'
 
-RSpec.describe 'Answer edition', type: :feature do
-  let!(:user) { create(:user) }
-  let!(:user2) { create(:user) }
-  let!(:question) { create(:question, user: user) }
-  let!(:answer) { create(:answer, question: question, user: user) }
+RSpec.describe 'Answer edition', type: :feature, js: true do
+  let(:user) { create(:user) }
+  let(:user2) { create(:user) }
+  let(:question) { create(:question, user: user) }
 
   describe 'Unauthenticated user' do
     it 'try to edit answer' do
@@ -14,6 +13,8 @@ RSpec.describe 'Answer edition', type: :feature do
   end
 
   describe 'Authentificated user' do
+    before { create(:answer, question: question, user: user) }
+
     context 'when he see his created answer' do
       before do
         sign_in(user)
@@ -38,19 +39,19 @@ RSpec.describe 'Answer edition', type: :feature do
         end
       end
 
-      it "appeared new body answer's", js: true do
+      it "appeared new body answer's" do
         within '.answers-index-form' do
           expect(page).to have_content 'edited answer'
         end
       end
 
-      it "disappeared old body answer's", js: true do
+      it "disappeared old body answer's" do
         within '.answers-index-form' do
-          expect(page).not_to have_content answer.body
+          expect(page).not_to have_content question.answers.first.body
         end
       end
 
-      it 'disappeared field for edit answer', js: true do
+      it 'disappeared field for edit answer' do
         within '.answers-index-form' do
           expect(page).not_to have_selector('textarea', visible: true)
         end

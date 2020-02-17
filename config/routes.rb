@@ -1,9 +1,9 @@
 Rails.application.routes.draw do
   devise_for :users
   resources :questions, shallow: true do
-    resources :comments
-    resources :answers do
-      resources :comments
+    resources :comments, except: %i[show index]
+    resources :answers, except: %i[show index] do
+      resources :comments, only: %i[new create]
     end
   end
 

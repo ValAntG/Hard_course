@@ -1,6 +1,6 @@
 require_relative 'acceptance_helper'
 
-RSpec.describe 'SignIns', type: :feature do
+RSpec.describe 'SignIns', type: :feature, js: true do
   describe 'User sign in' do
     context 'when registered user try to login' do
       let(:user) { create(:user) }

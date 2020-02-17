@@ -11,7 +11,9 @@
       .col-sm-9 = question.text_area :body, class: 'form-control'
 
     .form-group.attachment
-      = render 'attachments/attachments_edit', element: @question, attachments_size: @attachments_size_question
+      / = render 'attachments/attachments_edit', element: @question, attachments_size: @attachments_size_question
+      / - binding.pry
+      = render 'attachments/attachments_edit', element: @question
 
     .form-group.attachment
       .col-sm-3 = question.label :file, class: 'form-control control-label label-success'

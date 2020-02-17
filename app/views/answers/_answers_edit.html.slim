@@ -8,7 +8,8 @@
     .col-sm-9 = answer.text_area :body, class: 'form-control', id: "answer_body_#{answer.object.id}"
 
   .form-group
-    = render 'attachments/attachments_edit', element: answer.object, attachments_size: answer.object.attachments.size
+    = render 'attachments/attachments_edit', element: answer.object
+    / = render 'attachments/attachments_edit', element: answer.object, attachments_size: answer.object.attachments.size
 
   .form-group
     .col-sm-3 = answer.label :file, class: 'form-control control-label label-success'

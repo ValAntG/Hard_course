@@ -1,10 +1,10 @@
 require_relative 'acceptance_helper'
 
-RSpec.describe 'Create answer', type: :feature do
+RSpec.describe 'Create answer', type: :feature, js: true do
   let(:user) { create(:user) }
   let(:question) { create(:question) }
 
-  context 'when authenticated user create valid answer', js: true do
+  context 'when authenticated user create valid answer' do
     before do
       sign_in(user)
       visit question_path(question)
@@ -27,7 +27,7 @@ RSpec.describe 'Create answer', type: :feature do
     end
   end
 
-  context 'when authenticated user create invalid answer', js: true do
+  context 'when authenticated user create invalid answer' do
     before do
       sign_in(user)
       visit question_path(question)

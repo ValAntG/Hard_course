@@ -1,6 +1,6 @@
 require_relative 'acceptance_helper'
 
-RSpec.describe 'Create question', type: :feature do
+RSpec.describe 'Create question', type: :feature, js: true do
   let(:user) { create(:user) }
 
   describe 'Authenticated user creates question' do
@@ -18,15 +18,15 @@ RSpec.describe 'Create question', type: :feature do
         click_on 'Save'
       end
 
-      it 'visible flash message', js: true do
+      it 'visible flash message' do
         expect(page).to have_content 'Your question successfully created.'
       end
 
-      it "visible text for title question's", js: true do
+      it "visible text for title question's" do
         expect(page).to have_content 'Text question'
       end
 
-      it "visible text for body question's", js: true do
+      it "visible text for body question's" do
         expect(page).to have_content 'text text'
       end
     end
@@ -40,11 +40,11 @@ RSpec.describe 'Create question', type: :feature do
         click_on 'Save'
       end
 
-      it "visible flash message 'Title can't be blank'", js: true do
+      it "visible flash message 'Title can't be blank'" do
         expect(page).to have_content 'Title can\'t be blank'
       end
 
-      it "visible flash message 'Body can't be blank'", js: true do
+      it "visible flash message 'Body can't be blank'" do
         expect(page).to have_content 'Body can\'t be blank'
       end
     end
@@ -61,7 +61,7 @@ RSpec.describe 'Create question', type: :feature do
     end
   end
 
-  describe 'multiple sessions', js: true do
+  describe 'multiple sessions' do
     before do
       Capybara.using_session('user') do
         sign_in(user)
@@ -82,25 +82,25 @@ RSpec.describe 'Create question', type: :feature do
     end
 
     context "when question appears on another user's page" do
-      it 'visible flash message in user', js: true do
+      it 'visible flash message in user' do
         Capybara.using_session('user') do
           expect(page).to have_content 'Your question successfully created.'
         end
       end
 
-      it "visible text for title question's in user", js: true do
+      it "visible text for title question's in user" do
         Capybara.using_session('user') do
           expect(page).to have_content 'Text question'
         end
       end
 
-      it "visible text for body question's in user", js: true do
+      it "visible text for body question's in user" do
         Capybara.using_session('user') do
           expect(page).to have_content 'text text'
         end
       end
 
-      it "visible text for body question's in guest", js: true do
+      it "visible text for body question's in guest" do
         Capybara.using_session('guest') do
           within '.col-lg-9' do
             expect(page).to have_content 'Text question'

@@ -1,6 +1,6 @@
 require_relative 'acceptance_helper'
 
-RSpec.describe 'Question edition', type: :feature do
+RSpec.describe 'Question edition', type: :feature, js: true do
   let(:user) { create(:user) }
   let(:user2) { create(:user) }
   let!(:question) { create(:question, user: user) }
@@ -37,19 +37,19 @@ RSpec.describe 'Question edition', type: :feature do
         end
       end
 
-      it "appeared new body question's", js: true do
+      it "appeared new body question's" do
         within '.question-show-form' do
           expect(page).to have_content 'Edited title'
         end
       end
 
-      it "disappeared old body question's", js: true do
+      it "disappeared old body question's" do
         within '.question-show-form' do
           expect(page).not_to have_content question.body
         end
       end
 
-      it 'disappeared field for edit question', js: true do
+      it 'disappeared field for edit question' do
         within '.question-show-form' do
           expect(page).not_to have_selector('textarea', visible: true)
         end

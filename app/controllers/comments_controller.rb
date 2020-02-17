@@ -1,8 +1,6 @@
 class CommentsController < ApplicationController
   before_action :load_elements, only: %i[update destroy]
 
-  def show; end
-
   def create
     @comment = Comment.new(comment_params.merge(user: current_user))
     respond_to do |format|
@@ -30,11 +28,8 @@ class CommentsController < ApplicationController
 
   def destroy
     authorize @comment
-    if @comment.destroy
-      redirect_to question_path(question_id_params)
-    else
-      render :edit
-    end
+    @comment.destroy
+    redirect_to question_path(question_id_params)
   end
 
   private

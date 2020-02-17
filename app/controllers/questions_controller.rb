@@ -9,20 +9,15 @@ class QuestionsController < ApplicationController
   def show
     @answer = @question.answers.build
     @comment = @question.comments.build
-    @answer.attachments.build
-    @attachments_size_question = @question.attachments.size
   end
 
   def new
     @question = Question.new
-    @question.attachments.build
-    @attachments_size_question = 0
   end
 
   def edit; end
 
   def create
-    @attachments_size_question = 0
     @question_form = QuestionForm.new(question_params)
     @question_form.user_id = current_user.id
     if @question_form.save
@@ -42,8 +37,11 @@ class QuestionsController < ApplicationController
   def update
     authorize @question
     @question_form = QuestionForm.new(question_params.merge(id: @question.id, user_id: current_user.id))
-    @question_form.update
-    redirect_to @question
+    if @question_form.update
+      redirect_to @question
+    else
+      render :edit
+    end
   end
 
   def destroy

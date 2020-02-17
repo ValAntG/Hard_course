@@ -27,19 +27,22 @@ RSpec.describe CommentsController, type: :controller do
       end
 
       it 'saves the new comment in the database, send format: json' do
-        expect { post :create, params: params, format: :json }
-          .to change(question.comments, :count).by(1)
+        expect { post :create, params: params, format: :json }.to change(question.comments, :count).by(1)
       end
 
-      it 'render create template, send format: html' do
-        post :create, params: params, format: :html
-        expect(response).to render_template(partial: 'comments/_comments_show')
+      context 'and render create template, send format: html' do
+        before { post :create, params: params, format: :html }
+
+        it { expect(response).to render_template(partial: 'comments/_comments_show') }
       end
 
-      it 'render create template, send format: json' do
-        post :create, params: params, format: :json
-        parsed_response = JSON.parse(response.body)
-        expect(parsed_response['comment']['body']).to eq('MyComment')
+      context 'and render create template, send format: json' do
+        before { post :create, params: params, format: :json }
+
+        it do
+          parsed_response = JSON.parse(response.body)
+          expect(parsed_response['comment']['body']).to eq('MyComment')
+        end
       end
     end
 
@@ -67,15 +70,19 @@ RSpec.describe CommentsController, type: :controller do
         expect { post :create, params: params, format: :json }.to change(answer.comments, :count).by(1)
       end
 
-      it 'render create template comment for answer, send format: html' do
-        post :create, params: params, format: :html
-        expect(response).to render_template(partial: 'comments/_comments_show')
+      context 'and render create template comment for answer, send format: html' do
+        before { post :create, params: params, format: :html }
+
+        it { expect(response).to render_template(partial: 'comments/_comments_show') }
       end
 
-      it 'render create template, send format: json' do
-        post :create, params: params, format: :json
-        parsed_response = JSON.parse(response.body)
-        expect(parsed_response['comment']['body']).to eq('MyComment')
+      context 'and render create template, send format: json' do
+        before { post :create, params: params, format: :json }
+
+        it do
+          parsed_response = JSON.parse(response.body)
+          expect(parsed_response['comment']['body']).to eq('MyComment')
+        end
       end
     end
 

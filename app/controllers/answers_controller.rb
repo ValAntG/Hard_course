@@ -1,11 +1,12 @@
 class AnswersController < ApplicationController
   before_action :load_elements, only: %i[update destroy]
 
-  def show; end
-
   def create
-    question_id = params[:question_id].to_i
-    @answer_form = AnswerForm.new(answer_params.merge(user_id: current_user.id, question_id: question_id))
+    answer_params_create = answer_params.merge(
+      user_id: current_user.id,
+      question_id: params[:question_id].to_i
+    )
+    @answer_form = AnswerForm.new(answer_params_create)
     respond_to do |format|
       if @answer_form.save
         format.js

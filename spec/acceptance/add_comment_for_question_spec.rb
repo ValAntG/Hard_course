@@ -1,6 +1,6 @@
 require_relative 'acceptance_helper'
 
-RSpec.describe 'Add comment for question', type: :feature do
+RSpec.describe 'Add comment for question', type: :feature, js: true do
   let(:user) { create(:user) }
   let(:question) { create(:question) }
 
@@ -9,7 +9,7 @@ RSpec.describe 'Add comment for question', type: :feature do
     visit question_path(question)
   end
 
-  context 'when authenticated user try to create valid comment', js: true do
+  context 'when authenticated user try to create valid comment' do
     before do
       within '.commentsForQuestion' do
         click_on 'Комментировать'
@@ -31,7 +31,7 @@ RSpec.describe 'Add comment for question', type: :feature do
     end
   end
 
-  context 'when authenticated user create invalid comment', js: true do
+  context 'when authenticated user create invalid comment' do
     before do
       within '.commentsForQuestion' do
         click_on 'Комментировать'
