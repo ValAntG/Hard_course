@@ -4,7 +4,7 @@ module ApplicationHelper
     when Question
       question_path(element.id, attachment_delete_params(element, attachment))
     when Answer
-      question_answer_path(element.question.id, element.id, attachment_delete_params(element, attachment))
+      answer_path(element.id, attachment_delete_params(element, attachment))
     end
   end
 

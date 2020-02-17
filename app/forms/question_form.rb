@@ -1,6 +1,6 @@
 class QuestionForm
   include ActiveModel::Model
-  include Virtus
+  include Virtus.model
 
   attribute :title, String
   attribute :body, String

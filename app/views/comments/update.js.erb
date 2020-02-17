@@ -1,0 +1,8 @@
+<% if @comment.errors.present? %>
+  <% @comment.errors.full_messages.each do |message| %>
+    $('.comment-errors').html('<%= j message %>');
+  <% end %>
+<% else %>
+  $('.comments').html('<%= j render partial: 'questions/comments_show', locals: {commentable: @commentable} %>');
+  $('a.edit-comment-link').on('click', toggleEditCommentMode );
+<% end %>

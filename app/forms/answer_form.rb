@@ -1,6 +1,6 @@
 class AnswerForm
   include ActiveModel::Model
-  include Virtus
+  include Virtus.model
 
   attribute :body, String
   attribute :attachments, Hash[Symbol => Integer]
@@ -18,6 +18,8 @@ class AnswerForm
     if valid?
       save_answer
       save_attachment unless attachments.empty?
+      answer.id
+      build_comment
       true
     else
       false
@@ -26,7 +28,6 @@ class AnswerForm
 
   def update
     if valid?
-
       update_answer
       save_attachment unless attachments.empty?
       true
@@ -55,5 +56,9 @@ class AnswerForm
 
   def del_attachment
     Attachment.find(attachments[:id]).delete
+  end
+
+  def build_comment
+    @comment = @answer.comments.build(user_id: user_id)
   end
 end

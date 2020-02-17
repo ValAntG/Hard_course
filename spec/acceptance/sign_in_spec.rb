@@ -1,25 +1,36 @@
 require_relative 'acceptance_helper'
 
-feature 'User sign in', '
-  In order to be able to ask question
-  As an user
-  I want to be able to sign in
-' do
-  given(:user) { create(:user) }
-  scenario 'Registered user try to sign in' do
-    sign_in(user)
+RSpec.describe 'SignIns', type: :feature, js: true do
+  describe 'User sign in' do
+    context 'when registered user try to login' do
+      let(:user) { create(:user) }
 
-    expect(page).to have_content 'Signed in successfully'
-    expect(current_path).to eq root_path
-  end
+      before { sign_in(user) }
 
-  scenario 'Non-registered user try to sign in' do
-    visit new_user_session_path
-    fill_in 'Email', with: 'wrong@test.com'
-    fill_in 'Password', with: '12345678'
-    click_on 'Log in'
+      it 'show message' do
+        expect(page).to have_content 'Signed in successfully'
+      end
 
-    expect(page).to have_content 'Invalid Email or password.'
-    expect(current_path).to eq new_user_session_path
+      it 'redirected to the root page' do
+        expect(page).to have_current_path root_path
+      end
+    end
+
+    context 'when non-registered user try to login' do
+      before do
+        visit new_user_session_path
+        fill_in 'Email', with: 'wrong@test.com'
+        fill_in 'Password', with: '12345678'
+        click_on 'Log in'
+      end
+
+      it 'show message' do
+        expect(page).to have_content 'Invalid Email or password.'
+      end
+
+      it 'stays on the old page' do
+        expect(page).to have_current_path new_user_session_path
+      end
+    end
   end
 end

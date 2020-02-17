@@ -1,34 +1,57 @@
 require 'rails_helper'
 
 RSpec.describe AnswersController, type: :controller do
-  let!(:user) { create :user }
+  let(:user) { create :user }
+  let(:question) { create :question }
+
   before { sign_in_user(user) }
-  let!(:question) { create :question }
 
   describe 'POST #create' do
     context 'with valid attributes' do
-      it 'saves the new answer in the database, send format: html' do
-        expect(response).to be_success
-        expect { post :create, params: { answer: attributes_for(:answer), question_id: question, format: :html } }
-          .to change(question.answers, :count).by(1)
+      it 'successful response received' do
+        expect(response).to be_successful
       end
 
-      it 'saves the new answer in the database, send format: json' do
-        expect(response).to be_success
-        expect { post :create, params: { answer: attributes_for(:answer), question_id: question, format: :json } }
-          .to change(question.answers, :count).by(1)
+      context 'and saves the new answer in the database' do
+        it 'send format: html' do
+          expect { post :create, params: { answer: attributes_for(:answer), question_id: question, format: :html } }
+            .to change(question.answers, :count).by(1)
+        end
+
+        it 'send format: json' do
+          expect { post :create, params: { answer: attributes_for(:answer), question_id: question, format: :json } }
+            .to change(question.answers, :count).by(1)
+        end
+
+        it 'send format: js' do
+          expect { post :create, params: { answer: attributes_for(:answer), question_id: question, format: :js } }
+            .to change(question.answers, :count).by(1)
+        end
       end
 
-      it 'render create template, send format: html' do
-        post :create, params: { answer: attributes_for(:answer), question_id: question, format: :html }
-        expect(response).to render_template(partial: 'questions/_answers_show')
+      context 'and render create template' do
+        before { post :create, params: { answer: attributes_for(:answer), question_id: question, format: :html } }
+
+        it 'send format: html' do
+          expect(response).to render_template(partial: 'answers/_answers_show')
+        end
       end
 
-      it 'render create template, send format: json' do
-        post :create, params: { answer: attributes_for(:answer), question_id: question, format: :json }
-        expect(response).to be_success
-        parsed_response = JSON.parse(response.body)
-        expect(parsed_response['answer']['body']).to eq('AnswerText')
+      context 'and render create template' do
+        before { post :create, params: { answer: attributes_for(:answer), question_id: question, format: :json } }
+
+        it 'send format: json' do
+          expect(response).to be_successful
+        end
+      end
+
+      context 'and render create template' do
+        before { post :create, params: { answer: attributes_for(:answer), question_id: question, format: :json } }
+
+        it 'render create template, parsed response, send format: json' do
+          parsed_response = JSON.parse(response.body)
+          expect(parsed_response['answer']['body']).to eq('AnswerText')
+        end
       end
     end
 
@@ -37,68 +60,88 @@ RSpec.describe AnswersController, type: :controller do
         expect do
           post :create, params: { answer: attributes_for(:invalid_answer), question_id: question, format: :html }
         end
-          .to_not change(question.answers, :count)
+          .not_to change(question.answers, :count)
       end
 
       it 'does not save the answer, send format: json' do
         expect do
           post :create, params: { answer: attributes_for(:invalid_answer), question_id: question, format: :json }
         end
-          .to_not change(question.answers, :count)
+          .not_to change(question.answers, :count)
       end
 
       it 'redirects to question show view, send format: html' do
         post :create, params: { answer: attributes_for(:invalid_answer), question_id: question, format: :html }
-        expect(response).to_not render_template(partial: 'questions/_answers_show')
+        expect(response).not_to render_template(partial: 'answers/_answers_show')
       end
 
-      it 'redirects to question show view, send format: json' do
-        post :create, params: { answer: attributes_for(:invalid_answer), question_id: question, format: :json }
-        expect(response).to have_http_status(422)
-        parsed_response = JSON.parse(response.body)
-        expect(parsed_response.first).to eq("Body can't be blank")
+      context 'and redirects to question show view' do
+        before do
+          post :create, params: { answer: attributes_for(:invalid_answer), question_id: question, format: :json }
+        end
+
+        it 'send format: json' do
+          expect(response).to have_http_status(:unprocessable_entity)
+        end
+
+        it 'redirects to question show view, parsed response, send format: json' do
+          parsed_response = JSON.parse(response.body)
+          expect(parsed_response.first).to eq("Body can't be blank")
+        end
       end
     end
   end
 
   describe 'PATCH #update' do
     let(:answer) { create(:answer, question: question, user: user) }
-    it 'assings the requested answer to @answer' do
-      patch :update, params: { id: answer.id, question_id: question.id, answer: attributes_for(:answer), format: :js }
-      expect(assigns(:answer)).to eq answer
+
+    it 'successful response received' do
+      expect(response).to be_successful
     end
 
-    it 'assings the question' do
-      patch :update, params: { id: answer.id, question_id: question.id, answer: attributes_for(:answer), format: :js }
-      expect(assigns(:question)).to eq question
-    end
+    context 'when send format: :js' do
+      before do
+        patch :update, params: { id: answer.id, question_id: question.id, answer: { body: 'new body' }, format: :js }
+      end
 
-    it 'changes answer attributes' do
-      patch :update, params: { id: answer.id, question_id: question.id, answer: { body: 'new body' }, format: :js }
-      answer.reload
-      expect(answer.body).to eq 'new body'
-    end
+      it 'assings the requested answer to @answer' do
+        expect(assigns(:answer)).to eq answer
+      end
 
-    it 'render update template' do
-      patch :update, params: { id: answer.id, question_id: question.id, answer: attributes_for(:answer), format: :js }
-      expect(response).to redirect_to question_path(question.id)
+      it 'assings the question' do
+        expect(assigns(:question)).to eq question
+      end
+
+      it 'changes answer attributes' do
+        answer.reload
+        expect(answer.body).to eq 'new body'
+      end
+
+      it 'render update template' do
+        expect(response).to redirect_to question_path(question.id)
+      end
     end
   end
 
   describe 'DELETE #destroy' do
-    let!(:user) { create :user }
-    before { sign_in_user(user) }
+    let(:user) { create :user }
     let(:question) { create(:question) }
-    let(:answer) { create(:answer, question: question, user: user) }
-    it 'deletes answer' do
-      answer
-      expect { delete :destroy, params: { id: answer.id, question_id: question.id } }
-        .to change(Answer, :count).by(-1)
+    let(:answer) { create(:answer, question_id: question.id, user_id: user.id) }
+
+    before { sign_in_user(user) }
+
+    context 'when the answer is deleted' do
+      before { answer }
+
+      it 'decreases in the database' do
+        expect { delete :destroy, params: { id: answer.id, question_id: question.id } }.to change(Answer, :count).by(-1)
+      end
     end
 
-    it 'redirect to index view' do
-      delete :destroy, params: { id: answer, question_id: question.id }
-      expect(response).to redirect_to question_path(question.id)
+    context 'when the answer is deleted redirect to index view' do
+      before { delete :destroy, params: { id: answer, question_id: question.id } }
+
+      it { expect(response).to redirect_to question_path(question.id) }
     end
   end
 end

@@ -2,7 +2,4 @@
   <% @answer_form.errors.full_messages.each do |message| %>
     $('.answer-errors').html('<%= j message %>');
   <% end %>
-<% else %>
-  $('.answers').html('<%= j render 'questions/answers_show' %>');
-  $('#answer_body').val('');
 <% end %>

@@ -8,25 +8,28 @@ class QuestionsController < ApplicationController
 
   def show
     @answer = @question.answers.build
-    @answer.attachments.build
-    @attachments_size_question = @question.attachments.size
+    @comment = @question.comments.build
   end
 
   def new
     @question = Question.new
-    @question.attachments.build
-    @attachments_size_question = 0
   end
 
   def edit; end
 
   def create
-    @attachments_size_question = 0
     @question_form = QuestionForm.new(question_params)
     @question_form.user_id = current_user.id
     if @question_form.save
       redirect_to question_url(@question_form.question), notice: 'Your question successfully created.'
+      publish_question
     else
+      @question = Question.new(title: @question_form[:title], body: @question_form[:body])
+      question_errors = []
+      @question_form.errors.messages.each do |key, value|
+        question_errors.push("#{key.to_s.capitalize} #{value.first}")
+      end
+      flash[:alert] = "Ошибка: #{question_errors}"
       render :new
     end
   end
@@ -34,12 +37,14 @@ class QuestionsController < ApplicationController
   def update
     authorize @question
     @question_form = QuestionForm.new(question_params.merge(id: @question.id, user_id: current_user.id))
-    @question_form.update
-    redirect_to @question
+    if @question_form.update
+      redirect_to @question
+    else
+      render :edit
+    end
   end
 
   def destroy
-    @question.answers.delete_all
     @question.destroy
     redirect_to questions_path
   end
@@ -48,6 +53,18 @@ class QuestionsController < ApplicationController
 
   def load_question
     @question = Question.find(params[:id])
+  end
+
+  def publish_question
+    return if @question_form.errors.any?
+
+    ActionCable.server.broadcast(
+      'questions',
+      ApplicationController.render(
+        partial: 'questions/question_form',
+        locals: { question: @question_form.question }
+      )
+    )
   end
 
   def question_params

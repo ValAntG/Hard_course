@@ -3,6 +3,8 @@ git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
 ruby '2.6.3'
 
+gem 'actioncable', '~> 5.0', '>= 5.0.2'
+gem 'active_model_serializers'
 gem 'carrierwave'
 gem 'cocoon'
 gem 'jquery-rails', '>= 4.3.5'
@@ -51,6 +53,7 @@ gem 'devise'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
+  gem 'action-cable-testing'
   gem 'byebug', platforms: %i[mri mingw x64_mingw]
   gem 'capybara', '~> 3.29'
   gem 'capybara-webkit', github: 'thoughtbot/capybara-webkit', branch: 'master'
@@ -59,9 +62,11 @@ group :development, :test do
   gem 'rails-controller-testing'
   gem 'rspec-rails'
   gem 'rubocop-rails'
+  gem 'rubocop-rspec', require: false
   gem 'scss_lint', require: false
   gem 'slim_lint'
   # Adds support for Capybara system testing and selenium driver
+  gem 'json_spec'
   gem 'shoulda-matchers'
 end
 

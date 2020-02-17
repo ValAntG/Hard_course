@@ -1,6 +1,6 @@
 .question-show-form
   .form-horizontal
-    = form_for @question, html: { class: 'edit-question-link' }
+    = form_for @question, html: { class: 'question-show-button', id: "questionId-#{@question.id}" }
       .form-group
         .col-sm-3 = label '', 'Тема вопроса:', class: 'form-control control-label label-warning'
         .col-sm-9 = label '', @question.title, class: 'form-control'
@@ -9,23 +9,27 @@
         .col-sm-9 = label '', @question.body, class: 'form-control'
 
       .form-group
-        = render 'attachments_show', element: @question, attachments_size: @attachments_size_question
+        / - binding.pry
+        / = render 'attachments/attachments_show', element: @question, attachments_size: @attachments_size_question
+        = render 'attachments/attachments_show', element: @question
 
-  .form-horizontal
+  .form-horizontal.question-show-button
     - if @question.user == current_user
       = link_to 'Edit question', '', class: 'btn btn-info form-control edit-question-link'
       = link_to 'Delete question', @question, method: :delete, data: { confirm: 'Вы действительно хотите удалить?' },
-        class: 'btn btn-danger form-control edit-question-link'
+        class: 'btn btn-danger form-control'
 
   .form-horizontal
     = render 'form', question: @question
-  br
 
-.answers
-  .form-horizontal
-    .form-group
-      .col-sm-12 = label '', 'Ответы:', class: 'form-control label-warning'
-    .answers-show-form
-      = render 'answers_show'
-    .answers-new-form
-      = render 'answers_new' unless current_user.nil?
+  .form-horizontal.comments class = "commentsForQuestion" id = "commentCommentableId-#{@question.id}"
+    = link_to 'Комментировать', '', class: 'btn btn-warning form-control comment-link' unless current_user.nil?
+    = render 'comments/comments_index', commentable: @question
+    = render 'comments/comments_new', commentable: @question unless current_user.nil?
+
+  .form-horizontal.answers
+    = link_to 'Ответить', '', class: 'btn btn-warning form-control answer-question-link' unless current_user.nil?
+    br
+    br
+    = render 'answers/answers_index'
+    = render 'answers/answers_new' unless current_user.nil?

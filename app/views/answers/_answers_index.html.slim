@@ -1,0 +1,11 @@
+.answers-index-form
+  - @question.answers.order(created_at: :asc).each do |answer|
+    - if answer.persisted?
+      = render 'answers/answers_show', answer: answer
+      = render 'answers/answers_edit', question: @question, answer: answer
+
+      .comments class = "commentsForAnswer" id = "commentCommentableId-#{answer.id}"
+        .form-horizontal
+          = link_to 'Комментировать', '', class: 'btn btn-warning form-control comment-link' unless current_user.nil?
+          = render 'comments/comments_index', commentable: answer
+          = render 'comments/comments_new', commentable: answer unless current_user.nil?
