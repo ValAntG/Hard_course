@@ -1,58 +1,29 @@
-class QuestionForm
-  include ActiveModel::Model
-  include Virtus.model
+class QuestionForm < ApplicationForm
+  attr_accessor :id, :title, :body, :attachments, :user_id
 
-  attribute :title, String
-  attribute :body, String
-  attribute :attachments, Hash[Symbol => Integer]
-  attribute :user_id
-  attribute :id
-
-  attr_reader :attachments, :question
+  attr_reader :question
 
   validates :title, presence: true
-  validates :body, presence: true
-  validates :user_id, presence: true
 
-  def save
-    if valid?
-      save_question
-      save_attachment unless attachments.empty?
-      true
-    else
-      false
-    end
+  def initialize(attributes = {})
+    super
+    @id ? @question = Question.find(@id) : @question = Question.new(user_id: @user_id)
+    @attachments ||= { attachments: nil }
   end
 
-  def update
-    if valid?
-      update_question
-      save_attachment unless attachments.empty?
-      true
-    else
-      del_attachment if attachments[:_destroy]
-      false
-    end
-  end
+  delegate :model_name, :id, :title, :body, :user_id, :persisted?, :attachments, to: :question
 
   private
 
-  def save_question
-    @question = Question.create!(title: title, body: body, user_id: user_id)
-  end
-
-  def update_question
-    @question = Question.find(id)
-    @question.update(title: title, body: body)
-  end
-
-  def save_attachment
-    attachments[:files].each do |file|
-      @question.attachments.create!(file: file)
+  def update_form_attributes
+    @question.title = @title
+    @question.body = @body
+    if valid?
+      @question.save
+      create_attachment(@question) if @attachments[:files]
+      true
+    else
+      false
     end
-  end
-
-  def del_attachment
-    Attachment.find(attachments[:id]).delete
   end
 end

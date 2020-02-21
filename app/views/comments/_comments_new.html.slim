@@ -1,4 +1,5 @@
-= form_for [commentable, @comment], remote: true, html: { id: "commentFor#{commentable.class}Id-#{commentable.id}" } do |comment|
+= form_for [commentable, commentable.comments.build], html: { id: "commentFor#{commentable.class}Id-#{commentable.id}",
+                                                          format: :json }, remote: true do |comment|
   .form-group
     .col-sm-3
     .col-sm-9.comment-errors

@@ -7,87 +7,49 @@ RSpec.describe AnswersController, type: :controller do
   before { sign_in_user(user) }
 
   describe 'POST #create' do
-    context 'with valid attributes' do
+    context 'with valid attributes after send' do
       it 'successful response received' do
         expect(response).to be_successful
       end
 
-      context 'and saves the new answer in the database' do
-        it 'send format: html' do
-          expect { post :create, params: { answer: attributes_for(:answer), question_id: question, format: :html } }
-            .to change(question.answers, :count).by(1)
-        end
-
-        it 'send format: json' do
-          expect { post :create, params: { answer: attributes_for(:answer), question_id: question, format: :json } }
-            .to change(question.answers, :count).by(1)
-        end
-
-        it 'send format: js' do
-          expect { post :create, params: { answer: attributes_for(:answer), question_id: question, format: :js } }
-            .to change(question.answers, :count).by(1)
-        end
-      end
-
-      context 'and render create template' do
-        before { post :create, params: { answer: attributes_for(:answer), question_id: question, format: :html } }
-
-        it 'send format: html' do
-          expect(response).to render_template(partial: 'answers/_answers_show')
-        end
-      end
-
-      context 'and render create template' do
-        before { post :create, params: { answer: attributes_for(:answer), question_id: question, format: :json } }
-
-        it 'send format: json' do
-          expect(response).to be_successful
-        end
-      end
-
-      context 'and render create template' do
-        before { post :create, params: { answer: attributes_for(:answer), question_id: question, format: :json } }
-
-        it 'render create template, parsed response, send format: json' do
-          parsed_response = JSON.parse(response.body)
-          expect(parsed_response['answer']['body']).to eq('AnswerText')
-        end
+      it 'saves the new answer in the database, send format: json' do
+        expect { post :create, params: { answer: attributes_for(:answer), question_id: question, format: :json } }
+          .to change(question.answers, :count).by(1)
       end
     end
 
-    context 'with invalid attributes' do
-      it 'does not save the answer, send format: html' do
-        expect do
-          post :create, params: { answer: attributes_for(:invalid_answer), question_id: question, format: :html }
-        end
-          .not_to change(question.answers, :count)
+    context 'with valid attributes after send' do
+      before { post :create, params: { answer: attributes_for(:answer), question_id: question, format: :json } }
+
+      it 'with render create template send format: json' do
+        expect(response).to be_successful
       end
 
+      it 'with render create template, parsed response, send format: json' do
+        parsed_response = JSON.parse(response.body)
+        expect(parsed_response['answer']['body']).to eq('AnswerText')
+      end
+    end
+
+    describe 'with invalid attributes' do
       it 'does not save the answer, send format: json' do
         expect do
           post :create, params: { answer: attributes_for(:invalid_answer), question_id: question, format: :json }
         end
           .not_to change(question.answers, :count)
       end
+    end
 
-      it 'redirects to question show view, send format: html' do
-        post :create, params: { answer: attributes_for(:invalid_answer), question_id: question, format: :html }
-        expect(response).not_to render_template(partial: 'answers/_answers_show')
+    describe 'with invalid attributes after send' do
+      before { post :create, params: { answer: attributes_for(:invalid_answer), question_id: question, format: :json } }
+
+      it 'redirects to question show view send format: json' do
+        expect(response).to have_http_status(:unprocessable_entity)
       end
 
-      context 'and redirects to question show view' do
-        before do
-          post :create, params: { answer: attributes_for(:invalid_answer), question_id: question, format: :json }
-        end
-
-        it 'send format: json' do
-          expect(response).to have_http_status(:unprocessable_entity)
-        end
-
-        it 'redirects to question show view, parsed response, send format: json' do
-          parsed_response = JSON.parse(response.body)
-          expect(parsed_response.first).to eq("Body can't be blank")
-        end
+      it 'redirects to question show view, parsed response, send format: json' do
+        parsed_response = JSON.parse(response.body)['errors']
+        expect(parsed_response).to eq('body' => ["can't be blank"])
       end
     end
   end
@@ -115,10 +77,6 @@ RSpec.describe AnswersController, type: :controller do
       it 'changes answer attributes' do
         answer.reload
         expect(answer.body).to eq 'new body'
-      end
-
-      it 'render update template' do
-        expect(response).to redirect_to question_path(question.id)
       end
     end
   end
