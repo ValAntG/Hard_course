@@ -6,22 +6,22 @@ class AnswerForm < ApplicationForm
 
   def initialize(attributes = {})
     super
-    @id ? @answer = Answer.find(@id) : @answer = Answer.new(question_id: @question_id, user_id: @user_id)
     @attachments ||= { attachments: nil }
+    @answer ||= Answer.new
   end
 
   delegate :model_name, :id, :body, :user_id, :persisted?, :attachments, to: :answer
 
-  private
-
-  def update_form_attributes
+  def save
     @answer.body = @body
-    if valid?
-      @answer.save
-      create_attachment(@answer) if @attachments[:files]
-      true
-    else
-      false
-    end
+    @answer.question_id = @question_id
+    @answer.user_id = @user_id
+    update_form_attributes(@answer)
+  end
+
+  def update
+    @answer = Answer.find(@id)
+    @answer.body = @body
+    update_form_attributes(@answer)
   end
 end

@@ -4,23 +4,28 @@ class ApplicationForm
 
   validates :body, :user_id, presence: true
 
-  def save
-    update_form_attributes
-  end
-
-  def update
-    @attachments[:_destroy] ? del_attachment : update_form_attributes
-  end
-
   private
 
-  def del_attachment
-    Attachment.find(@attachments[:id]).delete
+  def create_attachment(element)
+    @attachments[:files].each do |file|
+      element.attachments.create(file: file)
+    end
   end
 
-  def create_attachment(attachmentable)
-    @attachments[:files].each do |file|
-      attachmentable.attachments.create(file: file)
+  def del_attachment
+    @attachments[:delete].keys.each do |id|
+      Attachment.find(id).destroy
+    end
+  end
+
+  def update_form_attributes(element)
+    if valid?
+      element.save
+      del_attachment if @attachments[:delete]
+      create_attachment(element) if @attachments[:files]
+      true
+    else
+      false
     end
   end
 end
