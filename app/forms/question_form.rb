@@ -1,58 +1,23 @@
-class QuestionForm
-  include ActiveModel::Model
-  include Virtus.model
-
-  attribute :title, String
-  attribute :body, String
-  attribute :attachments, Hash[Symbol => Integer]
-  attribute :user_id
-  attribute :id
-
-  attr_reader :attachments, :question
+class QuestionForm < ApplicationForm
+  attr_accessor :body, :title, :attachments, :user_id, :question, :id
 
   validates :title, presence: true
-  validates :body, presence: true
-  validates :user_id, presence: true
+
+  delegate :model_name, :id, :persisted?, to: :question
+
+  def initialize(attributes = {})
+    super
+    @question = question
+    @question.title = title
+    @question.body = body
+    @question.user_id = user_id
+    @id = question.id
+    @attachments ||= {}
+  end
 
   def save
-    if valid?
-      save_question
-      save_attachment unless attachments.empty?
-      true
-    else
-      false
-    end
+    update_form_attributes(@question)
   end
 
-  def update
-    if valid?
-      update_question
-      save_attachment unless attachments.empty?
-      true
-    else
-      del_attachment if attachments[:_destroy]
-      false
-    end
-  end
-
-  private
-
-  def save_question
-    @question = Question.create!(title: title, body: body, user_id: user_id)
-  end
-
-  def update_question
-    @question = Question.find(id)
-    @question.update(title: title, body: body)
-  end
-
-  def save_attachment
-    attachments[:files].each do |file|
-      @question.attachments.create!(file: file)
-    end
-  end
-
-  def del_attachment
-    Attachment.find(attachments[:id]).delete
-  end
+  alias update save
 end

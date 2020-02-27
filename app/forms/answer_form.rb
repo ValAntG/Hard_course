@@ -1,64 +1,22 @@
-class AnswerForm
-  include ActiveModel::Model
-  include Virtus.model
+class AnswerForm < ApplicationForm
+  attr_accessor :body, :attachments, :user_id, :question_id, :answer
 
-  attribute :body, String
-  attribute :attachments, Hash[Symbol => Integer]
-  attribute :user_id
-  attribute :question_id
-  attribute :id
-
-  attr_reader :attachments, :answer
-
-  validates :body, presence: true
-  validates :user_id, presence: true
   validates :question_id, presence: true
 
+  delegate :model_name, :persisted?, to: :answer
+
+  def initialize(attributes = {})
+    super
+    @answer = answer
+    @answer.body = body
+    @answer.question_id = question_id
+    @answer.user_id = user_id
+    @attachments ||= {}
+  end
+
   def save
-    if valid?
-      save_answer
-      save_attachment unless attachments.empty?
-      answer.id
-      build_comment
-      true
-    else
-      false
-    end
+    update_form_attributes(@answer)
   end
 
-  def update
-    if valid?
-      update_answer
-      save_attachment unless attachments.empty?
-      true
-    else
-      del_attachment if attachments[:_destroy]
-      false
-    end
-  end
-
-  private
-
-  def save_answer
-    @answer = Answer.create!(body: body, user_id: user_id, question_id: question_id)
-  end
-
-  def update_answer
-    @answer = Answer.find(id)
-    @answer.update(body: body)
-  end
-
-  def save_attachment
-    attachments[:files].each do |file|
-      @answer.attachments.create!(file: file)
-    end
-  end
-
-  def del_attachment
-    Attachment.find(attachments[:id]).delete
-  end
-
-  def build_comment
-    @comment = @answer.comments.build(user_id: user_id)
-  end
+  alias update save
 end

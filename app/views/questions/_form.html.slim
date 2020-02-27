@@ -11,8 +11,6 @@
       .col-sm-9 = question.text_area :body, class: 'form-control'
 
     .form-group.attachment
-      / = render 'attachments/attachments_edit', element: @question, attachments_size: @attachments_size_question
-      / - binding.pry
       = render 'attachments/attachments_edit', element: @question
 
     .form-group.attachment

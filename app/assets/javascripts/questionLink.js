@@ -9,6 +9,10 @@ $(document).on('turbolinks:load', function () {
         $('.col-lg-9').append(data);
       }
     });
+
+  if ($('.question-show-form').length > 0) {
+    $('.edit_question').hide();
+  }
 });
 
 function toggleEditQuestionMode(e) {

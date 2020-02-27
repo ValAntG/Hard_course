@@ -1,73 +1,67 @@
 class QuestionsController < ApplicationController
   before_action :load_question, only: %i[show edit update destroy]
   before_action :authenticate_user!, except: %i[index show]
+  before_action :authorize_element, only: %i[update destroy]
+
+  respond_to :html
 
   def index
-    @questions = Question.all
+    respond_with(@questions = Question.all)
   end
 
   def show
-    @answer = @question.answers.build
-    @comment = @question.comments.build
+    respond_with @question
   end
 
   def new
-    @question = Question.new
+    respond_with(@question = Question.new)
   end
 
   def edit; end
 
   def create
-    @question_form = QuestionForm.new(question_params)
-    @question_form.user_id = current_user.id
-    if @question_form.save
-      redirect_to question_url(@question_form.question), notice: 'Your question successfully created.'
-      publish_question
-    else
-      @question = Question.new(title: @question_form[:title], body: @question_form[:body])
-      question_errors = []
-      @question_form.errors.messages.each do |key, value|
-        question_errors.push("#{key.to_s.capitalize} #{value.first}")
-      end
-      flash[:alert] = "Ошибка: #{question_errors}"
-      render :new
-    end
+    question_form = QuestionForm.new(question_params.merge(question: Question.new, user_id: current_user.id))
+    authorize question_form
+    publish_question(question_form) if question_form.save
+    @question = question_form.question
+    question_error(question_form) unless question_form.errors.empty?
+    respond_with(question_form)
   end
 
   def update
-    authorize @question
-    @question_form = QuestionForm.new(question_params.merge(id: @question.id, user_id: current_user.id))
-    if @question_form.update
-      redirect_to @question
-    else
-      render :edit
-    end
+    question_form = QuestionForm.new(question_params.merge(question: @question, user_id: current_user.id))
+    question_form.update
+    question_error(question_form) unless question_form.errors.empty?
+    respond_with(question_form)
   end
 
   def destroy
-    @question.destroy
-    redirect_to questions_path
+    respond_with(@question.destroy)
   end
 
   private
+
+  def question_error(question_form)
+    flash[:alert] = "Errors: #{question_form.errors.full_messages.join("\n")}"
+  end
 
   def load_question
     @question = Question.find(params[:id])
   end
 
-  def publish_question
-    return if @question_form.errors.any?
+  def authorize_element
+    authorize @question
+  end
 
-    ActionCable.server.broadcast(
-      'questions',
-      ApplicationController.render(
-        partial: 'questions/question_form',
-        locals: { question: @question_form.question }
-      )
-    )
+  def publish_question(question_form)
+    return if question_form.errors.any?
+
+    data_channel = ApplicationController.render(partial: 'questions/question_form',
+                                                locals: { question: question_form.question })
+    ActionCable.server.broadcast('questions', data_channel)
   end
 
   def question_params
-    params.require(:question).permit(:title, :body, attachments: [:_destroy, :id, files: []])
+    params.require(:question).permit(:title, :body, attachments: [files: [], delete: {}])
   end
 end

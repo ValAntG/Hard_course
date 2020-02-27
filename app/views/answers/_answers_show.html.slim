@@ -4,7 +4,6 @@
     .col-sm-9 = label '', answer.body, class: 'form-control', id: "answer_body_#{answer.id}"
 
   .form-group
-    / = render 'attachments/attachments_show', element: answer, attachments_size: answer.attachments.size
     = render 'attachments/attachments_show', element: answer
 
   - if current_user == answer.user
