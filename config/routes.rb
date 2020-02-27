@@ -1,5 +1,5 @@
 Rails.application.routes.draw do
-  devise_for :users
+  devise_for :users, controllers: { omniauth_callbacks: 'omniauth_callbacks' }
   resources :questions, shallow: true do
     resources :comments, except: %i[show index]
     resources :answers, except: %i[show index] do
