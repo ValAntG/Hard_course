@@ -1,28 +1,23 @@
 class QuestionForm < ApplicationForm
-  attr_accessor :id, :title, :body, :attachments, :user_id
-  attr_reader :question
+  attr_accessor :body, :title, :attachments, :user_id, :question, :id
 
   validates :title, presence: true
 
+  delegate :model_name, :id, :persisted?, to: :question
+
   def initialize(attributes = {})
     super
-    @attachments ||= { attachments: nil }
-    @question = Question.new
+    @question = question
+    @question.title = title
+    @question.body = body
+    @question.user_id = user_id
+    @id = question.id
+    @attachments ||= {}
   end
-
-  delegate :model_name, :id, :title, :body, :user_id, :persisted?, :attachments, to: :question
 
   def save
-    @question.title = @title
-    @question.body = @body
-    @question.user_id = @user_id
     update_form_attributes(@question)
   end
 
-  def update
-    @question = Question.find(@id)
-    @question.title = @title
-    @question.body = @body
-    update_form_attributes(@question)
-  end
+  alias update save
 end

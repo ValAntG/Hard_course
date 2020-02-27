@@ -16,7 +16,7 @@ RSpec.describe QuestionsController, type: :controller do
   describe 'GET #show' do
     before { get :show, params: { id: question.id } }
 
-    it { expect(assigns(:question)).to eq question }
+    it { expect(assigns(:question)).to eq(question) }
     it { expect(response).to render_template :show }
   end
 
@@ -44,36 +44,36 @@ RSpec.describe QuestionsController, type: :controller do
     before { sign_in_user(user) }
 
     context 'with valid attributes' do
-      let(:create_question_valid) { post :create, params: { question: attributes_for(:question) } }
+      subject(:post_create) { post :create, params: { question: attributes_for(:question) } }
 
       it 'the username of the created question is checked' do
-        create_question_valid
+        post_create
         expect(assigns(:question).user_id).to eq user.id
       end
 
-      it { expect { create_question_valid }.to change(Question, :count).by(1) }
-      it { expect(create_question_valid).to redirect_to question_path(assigns(:question_form).question) }
+      it { expect { post_create }.to change(Question, :count).by(1) }
+      it { expect(post_create).to redirect_to question_path(assigns(:question)) }
     end
 
     context 'with invalid attributes' do
-      let(:create_question_invalid) { post :create, params: { question: attributes_for(:question, :invalid) } }
+      subject(:post_create) { post :create, params: { question: attributes_for(:question, :invalid) } }
 
-      it { expect { create_question_invalid }.not_to change(Question, :count) }
-      it { expect(create_question_invalid).to render_template :new }
+      it { expect { post_create }.not_to change(Question, :count) }
+      it { expect(post_create).to render_template :new }
     end
 
     context 'with invalid title' do
-      let(:create_question_invalid) { post :create, params: { question: attributes_for(:question, :invalid_title) } }
+      subject(:post_create) { post :create, params: { question: attributes_for(:question, :invalid_title) } }
 
-      it { expect { create_question_invalid }.not_to change(Question, :count) }
-      it { expect(create_question_invalid).to render_template :new }
+      it { expect { post_create }.not_to change(Question, :count) }
+      it { expect(post_create).to render_template :new }
     end
 
     context 'with invalid body' do
-      let(:create_question_invalid) { post :create, params: { question: attributes_for(:question, :invalid_body) } }
+      subject(:post_create) { post :create, params: { question: attributes_for(:question, :invalid_body) } }
 
-      it { expect { create_question_invalid }.not_to change(Question, :count) }
-      it { expect(create_question_invalid).to render_template :new }
+      it { expect { post_create }.not_to change(Question, :count) }
+      it { expect(post_create).to render_template :new }
     end
   end
 
@@ -86,10 +86,10 @@ RSpec.describe QuestionsController, type: :controller do
         question.reload
       end
 
-      it { expect(question.title).to eq 'new title' }
-      it { expect(question.body).to eq 'new body' }
-      it { expect(assigns(:question)).to eq question }
-      it { expect(response).to redirect_to question }
+      it { expect(question.title).to eq(attributes_for(:question, :new_title)[:title]) }
+      it { expect(question.body).to eq(attributes_for(:question, :new_body)[:body]) }
+      it { expect(assigns(:question)).to eq(question) }
+      it { expect(response).to redirect_to(question) }
     end
 
     context 'when edit invalid attributes' do
@@ -98,8 +98,8 @@ RSpec.describe QuestionsController, type: :controller do
         question.reload
       end
 
-      it { expect(question.title).to eq 'MyString' }
-      it { expect(question.body).to eq 'MyText' }
+      it { expect(question.title).to eq(attributes_for(:question)[:title]) }
+      it { expect(question.body).to eq(attributes_for(:question)[:body]) }
       it { expect(response).to render_template :edit }
     end
 
@@ -109,8 +109,8 @@ RSpec.describe QuestionsController, type: :controller do
         question.reload
       end
 
-      it { expect(question.title).to eq 'MyString' }
-      it { expect(question.body).to eq 'MyText' }
+      it { expect(question.title).to eq(attributes_for(:question)[:title]) }
+      it { expect(question.body).to eq(attributes_for(:question)[:body]) }
       it { expect(response).to render_template :edit }
     end
 
@@ -120,8 +120,8 @@ RSpec.describe QuestionsController, type: :controller do
         question.reload
       end
 
-      it { expect(question.title).to eq 'MyString' }
-      it { expect(question.body).to eq 'MyText' }
+      it { expect(question.title).to eq(attributes_for(:question)[:title]) }
+      it { expect(question.body).to eq(attributes_for(:question)[:body]) }
       it { expect(response).to render_template :edit }
     end
 
@@ -134,13 +134,14 @@ RSpec.describe QuestionsController, type: :controller do
         question.reload
       end
 
-      it { expect(question.title).to eq 'MyString' }
-      it { expect(question.body).to eq 'MyText' }
+      it { expect(question.title).to eq(attributes_for(:question)[:title]) }
+      it { expect(question.body).to eq(attributes_for(:question)[:body]) }
     end
   end
 
   describe 'DELETE #destroy' do
-    let(:destroy_question) { delete :destroy, params: { id: question } }
+    subject(:destroy_question) { delete :destroy, params: { id: question } }
+
     let(:answer) { create(:answer, question_id: question.id, user_id: user.id) }
 
     before do

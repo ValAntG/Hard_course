@@ -9,19 +9,19 @@ RSpec.describe AnswersController, type: :controller do
 
   describe 'POST #create' do
     context 'with valid attributes' do
-      let(:create_answer) do
-        post :create, params: { answer: attributes_for(:answer), question_id: question, format: :json }
-      end
+      subject(:create_answer) { post :create, params: params }
+
+      let(:params) { { answer: attributes_for(:answer), question_id: question, user_id: user.id, format: :json } }
 
       it { expect(create_answer).to be_successful }
       it { expect { create_answer }.to change(question.answers, :count).by(1) }
-      it { expect(JSON.parse(create_answer.body)['answer']['body']).to eq('AnswerText') }
+      it { expect(JSON.parse(create_answer.body)['answer']['body']).to eq(attributes_for(:answer)[:body]) }
     end
 
     context 'with invalid attributes' do
-      let(:create_answer) do
-        post :create, params: { answer: attributes_for(:invalid_answer), question_id: question, format: :json }
-      end
+      subject(:create_answer) { post :create, params: params }
+
+      let(:params) { { answer: attributes_for(:answer, :invalid), question_id: question, format: :json } }
 
       it { expect(create_answer).to have_http_status(:unprocessable_entity) }
       it { expect { create_answer }.not_to change(question.answers, :count) }
@@ -30,19 +30,21 @@ RSpec.describe AnswersController, type: :controller do
   end
 
   describe 'PATCH #update' do
+    let(:params) { { answer: attributes_for(:answer, :new), id: answer.id, question_id: question, format: :js } }
+
     before do
-      patch :update, params: { id: answer.id, question_id: question, answer: { body: 'new body' }, format: :js }
+      patch :update, params: params
       answer.reload
     end
 
     it { expect(response).to be_successful }
     it { expect(assigns(:answer)).to eq answer }
     it { expect(assigns(:question)).to eq question }
-    it { expect(answer.body).to eq 'new body' }
+    it { expect(answer.body).to eq(attributes_for(:answer, :new)[:body]) }
   end
 
   describe 'DELETE #destroy' do
-    let(:delete_answer) { delete :destroy, params: { id: answer, question_id: question } }
+    subject(:delete_answer) { delete :destroy, params: { id: answer, question_id: question } }
 
     before do
       sign_in_user(user)

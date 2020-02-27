@@ -9,37 +9,41 @@ RSpec.describe CommentsController, type: :controller do
 
   describe 'POST #create' do
     describe 'with valid attributes comment for question' do
-      let(:attr) { attributes_for(:comment, :for_question, question_id: question, commentable_id: question) }
-      let(:create_comment) { post :create, params: { comment: attr, question_id: question }, format: :json }
+      subject(:post_create) { post :create, params: { comment: attr, question_id: question }, format: :json }
 
-      it { expect { create_comment }.to change(question.comments, :count).by(1) }
-      it { expect(JSON.parse(create_comment.body)['body']).to eq('MyComment') }
+      let(:attr) { attributes_for(:comment, :for_question, question_id: question, commentable_id: question) }
+
+      it { expect { post_create }.to change(question.comments, :count).by(1) }
+      it { expect(JSON.parse(post_create.body)['body']).to eq(attributes_for(:comment)[:body]) }
     end
 
     describe 'with valid attributes comment for answer' do
-      let(:attr) { attributes_for(:comment, :for_answer, question_id: question, commentable_id: answer) }
-      let(:create_comment) { post :create, params: { comment: attr, answer_id: answer }, format: :json }
+      subject(:post_create) { post :create, params: { comment: attr, answer_id: answer }, format: :json }
 
-      it { expect { create_comment }.to change(answer.comments, :count).by(1) }
-      it { expect(JSON.parse(create_comment.body)['body']).to eq('MyComment') }
+      let(:attr) { attributes_for(:comment, :for_answer, question_id: question, commentable_id: answer) }
+
+      it { expect { post_create }.to change(answer.comments, :count).by(1) }
+      it { expect(JSON.parse(post_create.body)['body']).to eq(attributes_for(:comment)[:body]) }
     end
 
     describe 'invalid attributes for question' do
-      let(:attr) { attributes_for(:comment, :invalid, :for_question, question_id: question, commentable_id: question) }
-      let(:create_invalid_comment) { post :create, params: { comment: attr, question_id: question }, format: :json }
+      subject(:post_create) { post :create, params: { comment: attr, question_id: question }, format: :json }
 
-      it { expect(create_invalid_comment).to have_http_status(:unprocessable_entity) }
-      it { expect { create_invalid_comment }.not_to change(question.comments, :count) }
-      it { expect(JSON.parse(create_invalid_comment.body)['errors']).to eq('body' => ["can't be blank"]) }
+      let(:attr) { attributes_for(:comment, :invalid, :for_question, question_id: question, commentable_id: question) }
+
+      it { expect(post_create).to have_http_status(:unprocessable_entity) }
+      it { expect { post_create }.not_to change(question.comments, :count) }
+      it { expect(JSON.parse(post_create.body)['errors']).to eq('body' => ["can't be blank"]) }
     end
 
     describe 'invalid attributes for answer' do
-      let(:attr) { attributes_for(:comment, :invalid, :for_answer, question_id: question, commentable_id: answer) }
-      let(:create_invalid_comment) { post :create, params: { comment: attr, answer_id: answer }, format: :json }
+      subject(:post_create) { post :create, params: { comment: attr, answer_id: answer }, format: :json }
 
-      it { expect(create_invalid_comment).to have_http_status(:unprocessable_entity) }
-      it { expect { create_invalid_comment }.not_to change(answer.comments, :count) }
-      it { expect(JSON.parse(create_invalid_comment.body)['errors']).to eq('body' => ["can't be blank"]) }
+      let(:attr) { attributes_for(:comment, :invalid, :for_answer, question_id: question, commentable_id: answer) }
+
+      it { expect(post_create).to have_http_status(:unprocessable_entity) }
+      it { expect { post_create }.not_to change(answer.comments, :count) }
+      it { expect(JSON.parse(post_create.body)['errors']).to eq('body' => ["can't be blank"]) }
     end
   end
 
@@ -54,7 +58,7 @@ RSpec.describe CommentsController, type: :controller do
       end
 
       it { expect(assigns(:comment)).to eq comment }
-      it { expect(comment.body).to eq 'new body' }
+      it { expect(comment.body).to eq(attributes_for(:comment, :new)[:body]) }
     end
 
     context 'with valid attributes for answer' do
@@ -67,7 +71,7 @@ RSpec.describe CommentsController, type: :controller do
       end
 
       it { expect(assigns(:comment)).to eq comment }
-      it { expect(comment.body).to eq 'new body' }
+      it { expect(comment.body).to eq(attributes_for(:comment, :new)[:body]) }
 
       it 'render update template' do
         patch :update, params: { comment: attr, id: comment }, format: :html
@@ -80,8 +84,9 @@ RSpec.describe CommentsController, type: :controller do
     before { sign_in_user(user) }
 
     context 'with delete comment for question' do
+      subject(:delete_comment) { delete :destroy, params: { id: comment, comment: { question_id: question } } }
+
       let(:comment) { create(:comment, commentable: question, user: user) }
-      let(:delete_comment) { delete :destroy, params: { id: comment, comment: { question_id: question } } }
 
       before { comment }
 
@@ -90,10 +95,11 @@ RSpec.describe CommentsController, type: :controller do
     end
 
     context 'with delete comment for answer' do
-      let(:comment) { create(:comment, commentable: answer, user: user) }
-      let(:delete_comment) do
+      subject(:delete_comment) do
         delete :destroy, params: { id: comment, comment: { question_id: question }, answer_id: answer }
       end
+
+      let(:comment) { create(:comment, commentable: answer, user: user) }
 
       before { comment }
 

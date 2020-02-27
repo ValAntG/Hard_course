@@ -4,22 +4,23 @@ class AnswersController < ApplicationController
   respond_to :json, :js
 
   def create
-    @answer_form = AnswerForm.new(answer_params.merge(user_id: current_user.id, question_id: params[:question_id]))
+    answer_attr = answer_params.merge(answer: Answer.new, user_id: current_user.id, question_id: params[:question_id])
+    @answer_form = AnswerForm.new(answer_attr)
     authorize @answer_form
-    publish_answer @answer_form.answer, params[:question_id], 'create' if @answer_form.save
-    respond_with(@answer_form)
+    publish_answer(@answer_form.answer, params[:question_id], 'create') if @answer_form.save
+    respond_with(@answer_form, location: question_path(@answer_form.question_id))
   end
 
   def update
-    @answer_form = AnswerForm.new(answer_params.merge(id: @answer.id, question_id: @question.id,
-                                                      user_id: current_user.id))
-    @answer_form.update
-    respond_with(@comment, location: question_path(@question.id))
+    answer_attr = answer_params.merge(answer: @answer, user_id: current_user.id, question_id: @question.id)
+    answer_form = AnswerForm.new(answer_attr)
+    answer_form.update
+    respond_with(answer_form, location: question_path(@question.id))
   end
 
   def destroy
     @answer.destroy
-    respond_with(@comment, location: question_path(@question.id))
+    respond_with(@answer, location: question_path(@question.id))
   end
 
   private
@@ -39,6 +40,6 @@ class AnswersController < ApplicationController
   end
 
   def answer_params
-    params.require(:answer).permit(:body, attachments: [:_destroy, :id, files: [], delete: {}])
+    params.require(:answer).permit(:body, attachments: [files: [], delete: {}])
   end
 end

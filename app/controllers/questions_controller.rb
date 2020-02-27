@@ -20,19 +20,19 @@ class QuestionsController < ApplicationController
   def edit; end
 
   def create
-    @question_form = QuestionForm.new(question_params.merge(user_id: current_user.id))
-    authorize @question_form
-    publish_question if @question_form.save
-    @question = @question_form.question
-    question_error unless @question_form.errors.empty?
-    respond_with(@question_form)
+    question_form = QuestionForm.new(question_params.merge(question: Question.new, user_id: current_user.id))
+    authorize question_form
+    publish_question(question_form) if question_form.save
+    @question = question_form.question
+    question_error(question_form) unless question_form.errors.empty?
+    respond_with(question_form)
   end
 
   def update
-    @question_form = QuestionForm.new(question_params.merge(id: @question.id, user_id: current_user.id))
-    @question_form.update
-    question_error unless @question_form.errors.empty?
-    respond_with(@question_form)
+    question_form = QuestionForm.new(question_params.merge(question: @question, user_id: current_user.id))
+    question_form.update
+    question_error(question_form) unless question_form.errors.empty?
+    respond_with(question_form)
   end
 
   def destroy
@@ -41,8 +41,8 @@ class QuestionsController < ApplicationController
 
   private
 
-  def question_error
-    flash[:alert] = "Errors: #{@question_form.errors.full_messages.join("\n")}"
+  def question_error(question_form)
+    flash[:alert] = "Errors: #{question_form.errors.full_messages.join("\n")}"
   end
 
   def load_question
@@ -53,15 +53,15 @@ class QuestionsController < ApplicationController
     authorize @question
   end
 
-  def publish_question
-    return if @question_form.errors.any?
+  def publish_question(question_form)
+    return if question_form.errors.any?
 
     data_channel = ApplicationController.render(partial: 'questions/question_form',
-                                                locals: { question: @question_form.question })
+                                                locals: { question: question_form.question })
     ActionCable.server.broadcast('questions', data_channel)
   end
 
   def question_params
-    params.require(:question).permit(:title, :body, attachments: [:_destroy, :id, files: []])
+    params.require(:question).permit(:title, :body, attachments: [files: [], delete: {}])
   end
 end
