@@ -7,13 +7,15 @@ RSpec.describe User do
   it { should validate_presence_of :password }
 
   describe '.find_for_oauth' do
-    let!(:user) { create(:user) }
-    let(:auth) { OmniAuth::AuthHash.new(provider: 'facebook', uid: '123456') }
-    let(:user_find_for_oauth) { described_class.find_for_oauth(auth) }
+    subject(:user_find_for_oauth) { described_class.find_for_oauth(auth) }
+
+    let(:user) { create(:user) }
     let(:authorization) { user_find_for_oauth.authorizations.first }
 
     context 'when user already has authorization' do
-      before { user.authorizations.create(provider: 'facebook', uid: '123456') }
+      let(:auth) { OmniAuth::AuthHash.new(attributes_for(:facebook)) }
+
+      before { user.authorizations.create(attributes_for(:facebook)) }
 
       it 'returns the user' do
         expect(described_class.find_for_oauth(auth)).to eq(user)
@@ -21,7 +23,9 @@ RSpec.describe User do
     end
 
     context 'when user has not authorization, and user already exists' do
-      let(:auth) { OmniAuth::AuthHash.new(provider: 'facebook', uid: '123456', info: { email: user.email }) }
+      let(:auth) { OmniAuth::AuthHash.new({ info: { email: user.email } }.merge(attributes_for(:facebook))) }
+
+      before { user }
 
       it 'does not create new user' do
         expect { user_find_for_oauth }.not_to change(described_class, :count)
@@ -45,7 +49,7 @@ RSpec.describe User do
     end
 
     context 'when user has not authorization, and user does not exist' do
-      let(:auth) { OmniAuth::AuthHash.new(provider: 'facebook', uid: '123456', info: { email: 'new@email.com' }) }
+      let(:auth) { OmniAuth::AuthHash.new({ info: attributes_for(:mail) }.merge(attributes_for(:facebook))) }
 
       it 'creates new user' do
         expect { user_find_for_oauth }.to change(described_class, :count).by(1)
