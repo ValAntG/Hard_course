@@ -53,6 +53,7 @@ gem 'devise'
 # OmniAuth is a library that standardizes multi-provider authentication for web applications
 gem 'omniauth'
 gem 'omniauth-facebook'
+gem 'omniauth-google-oauth2'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
