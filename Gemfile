@@ -15,7 +15,6 @@ gem 'remotipart', github: 'jbox-web/remotipart', tag: '1.5.0'
 gem 'responders'
 gem 'therubyracer'
 gem 'twitter-bootstrap-rails'
-gem 'virtus', '~> 1.0', '>= 1.0.5'
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '~> 5.2.3'
 # Use postgresql as the database for Active Record
@@ -51,6 +50,10 @@ gem 'bootsnap', '>= 1.1.0', require: false
 gem 'slim-rails'
 # Use authentication solution for Rails
 gem 'devise'
+# OmniAuth is a library that standardizes multi-provider authentication for web applications
+gem 'omniauth'
+gem 'omniauth-facebook'
+gem 'omniauth-google-oauth2'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
