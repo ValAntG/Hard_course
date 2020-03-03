@@ -13,7 +13,7 @@ class ApplicationForm
   end
 
   def del_attachment
-    @attachments[:delete].keys.each do |id|
+    @attachments[:delete].each_key do |id|
       Attachment.find(id).destroy
     end
   end

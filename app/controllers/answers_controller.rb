@@ -1,12 +1,13 @@
 class AnswersController < ApplicationController
-  before_action :load_elements, :authorize_element, only: %i[update destroy]
+  before_action :load_elements, only: %i[update destroy]
 
   respond_to :json, :js
+
+  authorize_resource
 
   def create
     answer_attr = answer_params.merge(answer: Answer.new, user_id: current_user.id, question_id: params[:question_id])
     @answer_form = AnswerForm.new(answer_attr)
-    authorize @answer_form
     publish_answer(@answer_form.answer, params[:question_id], 'create') if @answer_form.save
     respond_with(@answer_form, location: question_path(@answer_form.question_id))
   end
@@ -28,10 +29,6 @@ class AnswersController < ApplicationController
   def load_elements
     @answer = Answer.find(params[:id])
     @question = @answer.question
-  end
-
-  def authorize_element
-    authorize @answer
   end
 
   def publish_answer(answer, question, action)

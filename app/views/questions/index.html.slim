@@ -1,4 +1,5 @@
-p = link_to 'Ask question', new_question_path, class: 'col-md-12 btn btn-primary form-group'
+- if can?(:create, Question)
+  p = link_to 'Ask question', new_question_path, class: 'col-md-12 btn btn-primary form-group'
 
 p.col-md-12.form-control.label-success = 'Список вопросов'
 - @questions.each do |question|
