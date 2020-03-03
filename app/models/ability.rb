@@ -1,12 +1,9 @@
 class Ability
   include CanCan::Ability
 
-  attr_reader :user
-
   def initialize(user)
-    @user = user
     if user
-      user.admin? ? admin_ability : user_ability
+      user.admin? ? admin_ability : user_ability(user)
     else
       quest_ability
     end
@@ -20,7 +17,7 @@ class Ability
     can :manage, :all
   end
 
-  def user_ability
+  def user_ability(user)
     quest_ability
     can :create, [Question, Answer, Comment]
     can :update, [Question, Answer, Comment], user: user
