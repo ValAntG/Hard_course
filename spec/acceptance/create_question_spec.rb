@@ -53,11 +53,10 @@ RSpec.describe 'Create question', type: :feature, js: true do
   describe 'Non-authenticated user ' do
     before do
       visit questions_path
-      click_on 'Ask question'
     end
 
     it 'when trying to create question visible flash message' do
-      expect(page).to have_content 'You need to sign in or sign up before continuing.'
+      expect(page).not_to have_content 'Ask question'
     end
   end
 

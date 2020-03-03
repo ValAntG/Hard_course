@@ -1,9 +1,10 @@
 class QuestionsController < ApplicationController
   before_action :load_question, only: %i[show edit update destroy]
   before_action :authenticate_user!, except: %i[index show]
-  before_action :authorize_element, only: %i[update destroy]
 
   respond_to :html
+
+  authorize_resource
 
   def index
     respond_with(@questions = Question.all)
@@ -21,7 +22,6 @@ class QuestionsController < ApplicationController
 
   def create
     question_form = QuestionForm.new(question_params.merge(question: Question.new, user_id: current_user.id))
-    authorize question_form
     publish_question(question_form) if question_form.save
     @question = question_form.question
     question_error(question_form) unless question_form.errors.empty?
@@ -47,10 +47,6 @@ class QuestionsController < ApplicationController
 
   def load_question
     @question = Question.find(params[:id])
-  end
-
-  def authorize_element
-    authorize @question
   end
 
   def publish_question(question_form)

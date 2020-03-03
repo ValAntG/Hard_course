@@ -44,7 +44,7 @@ RSpec.describe AnswersController, type: :controller do
   end
 
   describe 'DELETE #destroy' do
-    subject(:delete_answer) { delete :destroy, params: { id: answer, question_id: question } }
+    subject(:delete_answer) { delete :destroy, params: { id: answer.id } }
 
     before do
       sign_in_user(user)

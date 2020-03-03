@@ -12,7 +12,7 @@
         = render 'attachments/attachments_show', element: @question
 
   .form-horizontal.question-show-button
-    - if @question.user == current_user
+    - if can?(:update, @question)
       = link_to 'Edit question', '', class: 'btn btn-info form-control edit-question-link'
       = link_to 'Delete question', @question, method: :delete, data: { confirm: 'Вы действительно хотите удалить?' },
         class: 'btn btn-danger form-control'
@@ -21,13 +21,13 @@
     = render 'form', question: @question
 
   .form-horizontal.comments class = "commentsForQuestion" id = "commentCommentableId-#{@question.id}"
-    = link_to 'Комментировать', '', class: 'btn btn-warning form-control comment-link' unless current_user.nil?
+    = link_to 'Комментировать', '', class: 'btn btn-warning form-control comment-link' if can?(:create, Comment)
     = render 'comments/comments_index', commentable: @question
-    = render 'comments/comments_new', commentable: @question unless current_user.nil?
+    = render 'comments/comments_new', commentable: @question if can?(:create, Comment)
 
   .form-horizontal.answers
-    = link_to 'Ответить', '', class: 'btn btn-warning form-control answer-question-link' unless current_user.nil?
+    = link_to 'Ответить', '', class: 'btn btn-warning form-control answer-question-link' if can?(:create, Answer)
     br
     br
     = render 'answers/answers_index'
-    = render 'answers/answers_new' unless current_user.nil?
+    = render 'answers/answers_new' if can?(:create, Answer)

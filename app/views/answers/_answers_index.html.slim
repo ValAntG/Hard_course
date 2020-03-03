@@ -6,6 +6,6 @@
 
       .comments class = "commentsForAnswer" id = "commentCommentableId-#{answer.id}"
         .form-horizontal
-          = link_to 'Комментировать', '', class: 'btn btn-warning form-control comment-link' unless current_user.nil?
+          = link_to 'Комментировать', '', class: 'btn btn-warning form-control comment-link' if can?(:create, Comment)
           = render 'comments/comments_index', commentable: answer
-          = render 'comments/comments_new', commentable: answer unless current_user.nil?
+          = render 'comments/comments_new', commentable: answer if can?(:create, Comment)

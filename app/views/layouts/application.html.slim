@@ -41,7 +41,8 @@ html lang="en"
             h3 Sidebar
             ul.nav.nav-list
               li.nav-header Sidebar
-              li = link_to 'Задать вопрос', new_question_path
+              - if can?(:create, Question)
+                li = link_to 'Задать вопрос', new_question_path
               li = link_to 'Все вопросы', questions_path
 
       footer

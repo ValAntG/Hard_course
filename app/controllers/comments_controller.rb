@@ -1,11 +1,12 @@
 class CommentsController < ApplicationController
-  before_action :load_elements, :authorize_element, except: :create
+  before_action :load_elements, except: :create
 
   respond_to :json, :js
 
+  authorize_resource
+
   def create
     @comment = Comment.new(comment_params.merge(user: current_user))
-    authorize @comment
     publish_comment @comment, question_id_params, 'create' if @comment.save
     respond_with(@comment)
   end
@@ -24,10 +25,6 @@ class CommentsController < ApplicationController
 
   def load_elements
     @comment = Comment.find(params[:id])
-  end
-
-  def authorize_element
-    authorize @comment
   end
 
   def publish_comment(comment, question_id, action)
