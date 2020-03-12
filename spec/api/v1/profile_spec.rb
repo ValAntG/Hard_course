@@ -1,8 +1,8 @@
- require 'rails_helper'
+require 'rails_helper'
 
-describe 'Profile API'  do
+describe 'Profile API' do
   describe 'GET /me' do
-    context 'unauthorized' do
+    context 'when unauthorized' do
       it 'return 401 status if there is no access_token' do
         get '/api/v1/profiles/me', params: { format: :json }
         expect(response.status).to eq 401
@@ -14,7 +14,7 @@ describe 'Profile API'  do
       end
     end
 
-    context 'authorized' do
+    context 'when authorized' do
       let(:me) { create(:user) }
       let(:access_token) { create(:access_token, resource_owner_id: me.id) }
 
@@ -22,11 +22,11 @@ describe 'Profile API'  do
 
       it { expect(response).to be_success }
 
-      %w(id email created_at updated_at admin).each do |attr|
+      %w[id email created_at updated_at admin].each do |attr|
         it { expect(response.body).to be_json_eql(me.send(attr.to_sym).to_json).at_path(attr) }
       end
 
-      %w(password encrypted_password).each do |attr|
+      %w[password encrypted_password].each do |attr|
         it { expect(response.body).not_to have_json_path(attr) }
       end
     end

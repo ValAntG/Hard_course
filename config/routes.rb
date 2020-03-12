@@ -13,11 +13,13 @@ Rails.application.routes.draw do
       resource :profiles do
         get :me, on: :collection
       end
+      resources :questions, only: %i[create show index], shallow: true do
+        resources :answers, only: %i[create show index]
+      end
     end
   end
 
   root to: 'questions#index'
 
   mount ActionCable.server => '/cable'
-  # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
 end

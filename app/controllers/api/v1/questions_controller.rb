@@ -1,8 +1,25 @@
 module Api
   module V1
-    class ProfilesController < BaseController
+    class QuestionsController < BaseController
       def index
-        render nothing:true
+        questions = Question.all
+        respond_with questions.to_json
+      end
+
+      def show
+        question = Question.find_by(id: params[:id])
+        respond_with question
+      end
+
+      def create
+        question = Question.create(question_params.merge(user_id: current_resource_owner.id))
+        respond_with question
+      end
+
+      private
+
+      def question_params
+        params.require(:question).permit(:title, :body)
       end
     end
   end

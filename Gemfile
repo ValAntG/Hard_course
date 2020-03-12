@@ -11,6 +11,8 @@ gem 'cocoon'
 gem 'doorkeeper'
 gem 'jquery-rails', '>= 4.3.5'
 gem 'less-rails', git: 'https://github.com/MustafaZain/less-rails'
+gem 'oj'
+gem 'oj_mimic_json'
 gem 'pry', '~> 0.12.2'
 gem 'remotipart', github: 'jbox-web/remotipart', tag: '1.5.0'
 gem 'responders'
@@ -85,7 +87,6 @@ group :development do
 end
 
 group :test do
-  gem 'json_spec'
   # Easy installation and use of chromedriver to run system tests with Chrome
   gem 'webdrivers', '~> 4.0'
   # Use launchy on the commandline, within the Capybara and Rspec-rails testing environment, or via its API

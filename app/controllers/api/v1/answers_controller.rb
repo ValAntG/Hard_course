@@ -1,21 +1,27 @@
 module Api
   module V1
-    module Question
     class AnswersController < BaseController
       def index
-        binding.pry
-        @answer = Question.find(params[:id]).answers
-        @question = @answer.question
-
-        @questions = Question.all
-        respond_with @questions
+        question = Question.find_by(id: params[:question_id])
+        respond_with question.answers.to_json
       end
 
-      # def show
-      #   @question = Question.find(params[:id])
-      #   respond_with @question
-      # end
-    end
+      def show
+        answer = Answer.find_by(id: params[:id])
+        respond_with answer
+      end
+
+      def create
+        answer = Answer.create(answer_params.merge(user_id: current_resource_owner.id,
+                                                   question_id: params[:question_id]))
+        respond_with answer
+      end
+
+      private
+
+      def answer_params
+        params.require(:answer).permit(:body, attachments: [files: [], delete: {}])
+      end
     end
   end
 end
