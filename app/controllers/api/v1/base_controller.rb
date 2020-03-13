@@ -8,7 +8,7 @@ module Api
       protected
 
       def current_resource_owner
-        @current_resource_owner ||= User.find_by(id: doorkeeper_token.resource_owner_id) if doorkeeper_token
+        User.find_by(id: doorkeeper_token.resource_owner_id) if doorkeeper_token
       end
     end
   end
