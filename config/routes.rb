@@ -11,7 +11,7 @@ Rails.application.routes.draw do
   namespace :api do
     namespace :v1 do
       resource :profiles do
-        get :me, on: :collection
+        get 'me', action: :show, controller: 'profiles'
       end
       resources :questions, only: %i[create show index], shallow: true do
         resources :answers, only: %i[create show index]

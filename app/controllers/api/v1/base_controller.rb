@@ -1,6 +1,6 @@
 module Api
   module V1
-    class BaseController < ApplicationController
+    class BaseController < ActionController::API
       before_action :doorkeeper_authorize!
 
       respond_to :json

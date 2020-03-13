@@ -95,34 +95,14 @@ describe 'Answer API' do
       it { expect(Answer.last.body).to eq(attributes_for(:answer)[:body]) }
     end
 
-    # context 'with invalid attributes' do
-    #   subject(:params) do
-    #     { question: attributes_for(:question, :invalid), format: :json, access_token: access_token.token }
-    #   end
-    #
-    #   it { expect { post_create }.not_to change(Question, :count) }
-    #   it { expect(response).not_to be_success }
-    #   it { expect(response.status).to eq 422 }
-    # end
-    #
-    # context 'with invalid title' do
-    #   subject(:params) do
-    #     { question: attributes_for(:question, :invalid_title), format: :json, access_token: access_token.token }
-    #   end
-    #
-    #   it { expect { post_create }.not_to change(Question, :count) }
-    #   it { expect(response).not_to be_success }
-    #   it { expect(response.status).to eq 422 }
-    # end
-    #
-    # context 'with invalid body' do
-    #   subject(:params) do
-    #     { question: attributes_for(:question, :invalid_body), format: :json, access_token: access_token.token }
-    #   end
-    #
-    #   it { expect { post_create }.not_to change(Question, :count) }
-    #   it { expect(response).not_to be_success }
-    #   it { expect(response.status).to eq 422 }
-    # end
+    context 'with invalid attributes' do
+      subject(:params) do
+        { answer: attributes_for(:answer, :invalid), format: :json, access_token: access_token.token }
+      end
+
+      it { expect { post_create }.not_to change(Answer, :count) }
+      it { expect(response).not_to be_success }
+      it { expect(response.status).to eq 422 }
+    end
   end
 end
