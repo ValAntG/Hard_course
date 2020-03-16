@@ -2,15 +2,18 @@ module Api
   module V1
     class AnswersController < BaseController
       def index
-        question = Question.find_by(id: params[:question_id])
-        respond_with question.answers.to_json
+        if (question = Question.find_by(id: params[:question_id]))
+          respond_with question.answers.to_json
+        else
+          render json: { status: 'error', code: 404, message: "Can't find question" }
+        end
       end
 
       def show
-        if answer = Answer.find_by(id: params[:id])
+        if (answer = Answer.find_by(id: params[:id]))
           respond_with answer
         else
-          render json: {status: "error", code: 404, message: "Can't find answer"}
+          render json: { status: 'error', code: 404, message: "Can't find answer" }
         end
       end
 

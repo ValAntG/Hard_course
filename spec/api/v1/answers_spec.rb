@@ -7,8 +7,6 @@ describe 'Answer API' do
   let!(:answer) { create(:answer, question: question, user: user) }
 
   describe 'GET /index' do
-    let!(:answer2) { create(:answer, question: question, user: user) }
-
     context 'when unauthorized' do
       it 'return 401 status if there is no access_token' do
         get "/api/v1/questions/#{question.id}/answers", params: { format: :json }
@@ -23,6 +21,7 @@ describe 'Answer API' do
 
     context 'when authorized' do
       before do
+        create(:answer, question: question, user: user)
         get "/api/v1/questions/#{question.id}/answers", params: { format: :json, access_token: access_token.token }
       end
 
@@ -32,6 +31,19 @@ describe 'Answer API' do
       %w[id body created_at updated_at].each do |attr|
         it { expect(response.body).to be_json_eql(answer.send(attr.to_sym).to_json).at_path("0/#{attr}") }
       end
+    end
+
+    context 'when authorized invalid path' do
+      subject(:parsed_response) { JSON.parse(response.body) }
+
+      before do
+        create(:answer, question: question, user: user)
+        get "/api/v1/questions/#{question.id + 2}/answers", params: { format: :json, access_token: access_token.token }
+      end
+
+      it { expect(parsed_response['status']).to eq('error') }
+      it { expect(parsed_response['code']).to eq(404) }
+      it { expect(parsed_response['message']).to eq("Can't find question") }
     end
   end
 
@@ -66,6 +78,18 @@ describe 'Answer API' do
           it { expect(response.body).to be_json_eql(comment.send(attr.to_sym).to_json).at_path("comments/0/#{attr}") }
         end
       end
+    end
+
+    context 'when authorized invalid path' do
+      subject(:parsed_response) { JSON.parse(response.body) }
+
+      before do
+        get "/api/v1/questions/#{question.id + 2}/answers", params: { format: :json, access_token: access_token.token }
+      end
+
+      it { expect(parsed_response['status']).to eq('error') }
+      it { expect(parsed_response['code']).to eq(404) }
+      it { expect(parsed_response['message']).to eq("Can't find question") }
     end
   end
 

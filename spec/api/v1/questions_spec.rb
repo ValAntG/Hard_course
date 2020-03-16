@@ -5,8 +5,6 @@ describe 'Question API' do
   let(:access_token) { create(:access_token) }
 
   describe 'GET /index' do
-    let!(:question) { create :question }
-
     context 'when unauthorized' do
       it 'return 401 status if there is no access_token' do
         get '/api/v1/questions', params: { format: :json }
@@ -20,9 +18,12 @@ describe 'Question API' do
     end
 
     context 'when authorized' do
-      let!(:question2) { create :question }
+      let!(:question) { create :question }
 
-      before { get '/api/v1/questions', params: { format: :json, access_token: access_token.token } }
+      before do
+        create :question
+        get '/api/v1/questions', params: { format: :json, access_token: access_token.token }
+      end
 
       it { expect(response).to be_success }
       it { expect(response.body).to have_json_size(2) }
@@ -70,6 +71,16 @@ describe 'Question API' do
       context 'with attachment' do
         it { expect(response.body).to have_json_size(0).at_path('attachments') }
       end
+    end
+
+    context 'when authorized invalid path' do
+      subject(:parsed_response) { JSON.parse(response.body) }
+
+      before { get "/api/v1/questions/#{question.id + 2}", params: { format: :json, access_token: access_token.token } }
+
+      it { expect(parsed_response['status']).to eq('error') }
+      it { expect(parsed_response['code']).to eq(404) }
+      it { expect(parsed_response['message']).to eq("Can't find question") }
     end
   end
 
