@@ -7,8 +7,11 @@ module Api
       end
 
       def show
-        question = Question.find_by(id: params[:id])
-        respond_with question
+        if question = Question.find_by(id: params[:id])
+          respond_with question
+        else
+          render json: {status: "error", code: 404, message: "Can't find question"}
+        end
       end
 
       def create
