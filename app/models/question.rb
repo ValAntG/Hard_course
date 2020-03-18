@@ -8,4 +8,12 @@ class Question < ApplicationRecord
   validates :body, presence: true
 
   accepts_nested_attributes_for :attachments, reject_if: :all_blank, allow_destroy: true
+
+  after_create :calculate_reputation
+
+  private
+
+  def calculate_reputation
+    Reputation.calculate(self)
+  end
 end
