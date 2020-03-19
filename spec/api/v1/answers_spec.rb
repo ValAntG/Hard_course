@@ -7,63 +7,67 @@ describe 'Answer API' do
   let!(:answer) { create(:answer, question: question, user: user) }
 
   describe 'GET /index' do
+    let(:invalid_path) do
+      get "/api/v1/questions/#{question.id + 2}/answers", params: { format: :json, access_token: access_token.token }
+    end
+
+    let(:index_authorized) do
+      create(:answer, question: question, user: user)
+      get "/api/v1/questions/#{question.id}/answers", params: { format: :json, access_token: access_token.token }
+    end
+
     it_behaves_like 'API Authenticable'
     it_behaves_like 'API show invalid path'
 
     it_behaves_like 'API index when authorized', %w[id body created_at updated_at] do
       let(:object) { answer }
       let(:size) { 2 }
+      let(:have_json_at_path) { nil }
       let(:path) { '0/' }
     end
 
     def do_request(options = {})
       get "/api/v1/questions/#{question.id}/answers", params: { format: :json }.merge(options)
     end
-
-    def invalid_path
-      get "/api/v1/questions/#{question.id + 2}/answers", params: { format: :json, access_token: access_token.token }
-    end
-
-    def index_authorized
-      create(:answer, question: question, user: user)
-      get "/api/v1/questions/#{question.id}/answers", params: { format: :json, access_token: access_token.token }
-    end
   end
 
   describe 'GET /show' do
+    let!(:comment) { create(:comment, commentable: answer, user: user) }
+
+    let(:invalid_path) do
+      get "/api/v1/questions/#{question.id + 2}/answers", params: { format: :json, access_token: access_token.token }
+    end
+
+    let(:index_authorized) do
+      get "/api/v1/answers/#{answer.id}", params: { format: :json, access_token: access_token.token }
+    end
+
     it_behaves_like 'API Authenticable'
     it_behaves_like 'API show invalid path'
 
     it_behaves_like 'API index when authorized', %w[id body created_at updated_at] do
       let(:object) { answer }
       let(:size) { 7 }
+      let(:have_json_at_path) { nil }
       let(:path) { '' }
     end
 
-    context 'when authorized' do
-      let!(:comment) { create(:comment, commentable: answer, user: user) }
+    it_behaves_like 'API index when authorized', %w[id body created_at updated_at] do
+      let(:object) { comment }
+      let(:size) { 1 }
+      let(:have_json_at_path) { 'comments' }
+      let(:path) { 'comments/0/' }
+    end
 
-      before { get "/api/v1/answers/#{answer.id}", params: { format: :json, access_token: access_token.token } }
-
-      context 'with comment' do
-        it { expect(response.body).to have_json_size(1).at_path('comments') }
-
-        %w[id body created_at updated_at].each do |attr|
-          it { expect(response.body).to be_json_eql(comment.send(attr.to_sym).to_json).at_path("comments/0/#{attr}") }
-        end
-      end
+    it_behaves_like 'API index when authorized', %w[id body created_at updated_at] do
+      let(:object) { answer }
+      let(:size) { 0 }
+      let(:have_json_at_path) { 'attachments' }
+      let(:path) { '' }
     end
 
     def do_request(options = {})
       get "/api/v1/answers/#{answer.id}", params: { format: :json }.merge(options)
-    end
-
-    def invalid_path
-      get "/api/v1/questions/#{question.id + 2}/answers", params: { format: :json, access_token: access_token.token }
-    end
-
-    def index_authorized
-      get "/api/v1/answers/#{answer.id}", params: { format: :json, access_token: access_token.token }
     end
   end
 
