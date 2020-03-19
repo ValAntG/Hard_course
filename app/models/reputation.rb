@@ -1,4 +1,4 @@
 class Reputation < ApplicationRecord
-  def self.calculate(object)
+  def self.calculate (object)
   end
 end

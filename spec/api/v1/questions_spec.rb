@@ -5,26 +5,23 @@ describe 'Question API' do
   let(:access_token) { create(:access_token) }
 
   describe 'GET /index' do
+    let!(:question) { create :question }
+
     it_behaves_like 'API Authenticable'
 
-    context 'when authorized' do
-      let!(:question) { create :question }
-
-      before do
-        create :question
-        get '/api/v1/questions', params: { format: :json, access_token: access_token.token }
-      end
-
-      it { expect(response).to be_successful }
-      it { expect(response.body).to have_json_size(2) }
-
-      %w[id title body created_at updated_at].each do |attr|
-        it { expect(response.body).to be_json_eql(question.send(attr.to_sym).to_json).at_path("0/#{attr}") }
-      end
+    it_behaves_like 'API index when authorized', %w[id title body created_at updated_at] do
+      let(:object) { question }
+      let(:size) { 2 }
+      let(:path) { '0/' }
     end
 
     def do_request(options = {})
       get '/api/v1/questions', params: { format: :json }.merge(options)
+    end
+
+    def index_authorized
+      create :question
+      get '/api/v1/questions', params: { format: :json, access_token: access_token.token }
     end
   end
 
@@ -32,17 +29,18 @@ describe 'Question API' do
     let!(:question) { create :question }
 
     it_behaves_like 'API Authenticable'
+    it_behaves_like 'API show invalid path'
+
+    it_behaves_like 'API index when authorized', %w[id body created_at updated_at] do
+      let(:object) { question }
+      let(:size) { 8 }
+      let(:path) { '' }
+    end
 
     context 'when authorized' do
       let!(:comment) { create(:comment, commentable: question, user: user) }
 
       before { get "/api/v1/questions/#{question.id}", params: { format: :json, access_token: access_token.token } }
-
-      it { expect(response).to be_successful }
-
-      %w[id title body created_at updated_at].each do |attr|
-        it { expect(response.body).to be_json_eql(question.send(attr.to_sym).to_json).at_path(attr.to_s) }
-      end
 
       context 'with comment' do
         it { expect(response.body).to have_json_size(1).at_path('comments') }
@@ -57,28 +55,36 @@ describe 'Question API' do
       end
     end
 
-    context 'when authorized invalid path' do
-      subject(:parsed_response) { JSON.parse(response.body) }
-
-      before { get "/api/v1/questions/#{question.id + 2}", params: { format: :json, access_token: access_token.token } }
-
-      it { expect(parsed_response['status']).to eq('error') }
-      it { expect(parsed_response['code']).to eq(404) }
-      it { expect(parsed_response['message']).to eq("Can't find question") }
-    end
-
     def do_request(options = {})
       get "/api/v1/questions/#{question.id}", params: { format: :json }.merge(options)
+    end
+
+    def invalid_path
+      get "/api/v1/questions/#{question.id + 2}", params: { format: :json, access_token: access_token.token }
+    end
+
+    def index_authorized
+      get "/api/v1/questions/#{question.id}", params: { format: :json, access_token: access_token.token }
     end
   end
 
   describe 'POST #create' do
-    subject(:post_create) { post '/api/v1/questions', params: params }
+    let(:object) { Question }
 
     it_behaves_like 'API Authenticable'
 
+    %w[invalid invalid_title invalid_body].each do |attr|
+      context "API create #{attr}" do
+        it_behaves_like 'API create invalid attributes' do
+          let(:attributes) { attributes_for(:question, attr) }
+        end
+      end
+    end
+
     context 'with valid attributes' do
-      subject(:params) { { question: attributes_for(:question), format: :json, access_token: access_token.token } }
+      subject(:post_create) { post '/api/v1/questions', params: params }
+
+      let(:params) { { question: attributes_for(:question), format: :json, access_token: access_token.token } }
 
       before { post '/api/v1/questions', params: params }
 
@@ -89,44 +95,12 @@ describe 'Question API' do
       it { expect(Question.last.title).to eq(attributes_for(:question)[:title]) }
     end
 
-    context 'with invalid attributes' do
-      subject(:params) do
-        { question: attributes_for(:question, :invalid), format: :json, access_token: access_token.token }
-      end
-
-      before { post '/api/v1/questions', params: params }
-
-      it { expect { post_create }.not_to change(Question, :count) }
-      it { expect(response).not_to be_successful }
-      it { expect(response.status).to eq 422 }
-    end
-
-    context 'with invalid title' do
-      subject(:params) do
-        { question: attributes_for(:question, :invalid_title), format: :json, access_token: access_token.token }
-      end
-
-      before { post '/api/v1/questions', params: params }
-
-      it { expect { post_create }.not_to change(Question, :count) }
-      it { expect(response).not_to be_successful }
-      it { expect(response.status).to eq 422 }
-    end
-
-    context 'with invalid body' do
-      subject(:params) do
-        { question: attributes_for(:question, :invalid_body), format: :json, access_token: access_token.token }
-      end
-
-      before { post '/api/v1/questions', params: params }
-
-      it { expect { post_create }.not_to change(Question, :count) }
-      it { expect(response).not_to be_successful }
-      it { expect(response.status).to eq 422 }
-    end
-
     def do_request(options = {})
       post '/api/v1/questions', params: { format: :json }.merge(options)
+    end
+
+    def create_invalid_attr(attributes)
+      post '/api/v1/questions', params: { question: attributes, format: :json, access_token: access_token.token }
     end
   end
 end

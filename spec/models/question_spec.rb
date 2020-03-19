@@ -15,18 +15,19 @@ RSpec.describe Question, type: :model do
     let(:user) { create(:user) }
 
     it 'should calculate reputation after creating' do
-      expect(Reputation).to have_received(:calculate).with(question)
+      expect(Reputation).to receive(:calculate).with(question)
       question.save!
     end
 
     it 'should not calculate reputation after updating' do
       question.save!
-      expect(Reputation).not_to have_received(:calculate)
+      expect(Reputation).not_to receive(:calculate)
       question.update(title: '121')
     end
 
     it 'should save user reputation' do
-      allow(Reputation).to have_received(:calculate)
+      allow(Reputation).to receive(:calculate).and_return(5)
+      expect { question.save! }.to change(user, :reputation).by(5)
     end
   end
 end
