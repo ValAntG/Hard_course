@@ -7,7 +7,10 @@ class AnswersController < ApplicationController
 
   def create
     @answer_form = init_answer_form(Answer.new, params[:question_id])
-    publish_answer(@answer_form.answer, params[:question_id], 'create') if @answer_form.save
+    if @answer_form.save
+      publish_answer(@answer_form.answer, params[:question_id], 'create')
+      AnswerMailer.delay.reply(@answer_form.answer)
+    end
     respond_with(@answer_form, location: question_path(@answer_form.question_id))
   end
 
