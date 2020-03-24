@@ -8,6 +8,8 @@ gem 'active_model_serializers'
 gem 'cancancan'
 gem 'carrierwave'
 gem 'cocoon'
+gem 'daemons'
+gem 'delayed_job_active_record'
 gem 'doorkeeper'
 gem 'jquery-rails', '>= 4.3.5'
 gem 'less-rails', git: 'https://github.com/MustafaZain/less-rails'
@@ -57,6 +59,7 @@ gem 'devise'
 gem 'omniauth'
 gem 'omniauth-facebook'
 gem 'omniauth-google-oauth2'
+gem 'whenever'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
@@ -84,6 +87,7 @@ group :development do
   # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
   gem 'spring'
   gem 'spring-watcher-listen', '~> 2.0.0'
+  gem 'letter_opener_web', '~> 1.0'
 end
 
 group :test do

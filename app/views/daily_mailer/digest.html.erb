@@ -1,0 +1,11 @@
+<h1>Daily</h1>
+
+<p> 
+  Hi, <%= @user.email %>
+</p>
+<p> We have a daily digest for you!</p>
+<p> All question, that were created by past day:</p>
+
+<% @questions.each do |question| %>
+  <ul><%= link_to question.title, question %></ul>
+<% end %>

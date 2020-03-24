@@ -9,9 +9,13 @@ class Question < ApplicationRecord
 
   accepts_nested_attributes_for :attachments, reject_if: :all_blank, allow_destroy: true
 
-  after_create :calculate_reputation
+  after_create :update_reputation
 
   private
+
+  def update_reputation
+    self.delay.calculate_reputation
+  end
 
   def calculate_reputation
     reputation = Reputation.calculate(self)
